@@ -58,23 +58,22 @@ import java.util.Map.Entry;
 public class AddNewAccount extends Fragment implements View.OnClickListener {
 
     public static final String TAG = AddNewAccount.class.getSimpleName();
-
-    public static AddNewAccount newInstance() {
-        return new AddNewAccount();
-    }
-
-    private String sessionId, restUrl, name, id,phone_fax, billing_address_street, billing_address_street_2, billing_address_street_3, billing_address_street_4, billing_address_city, billing_address_state, billing_address_postalcode,
+    private String module_name, sessionId, restUrl, name, id, phone_fax, billing_address_street, billing_address_street_2, billing_address_street_3, billing_address_street_4, billing_address_city, billing_address_state, billing_address_postalcode,
             phone_office, website, email1, response, billing_address_country;
     private EditText txt_name, txt_web, txt_oPhone, txt_fax, txt_bStreet, txt_bCity, txt_bState, txt_bPostal, txt_bCountry, txt_email;
     private Button btn_save, btn_cancel;
     private ProgressDialog dialog;
     private boolean fromEdit = false;
 
+    public static AddNewAccount newInstance() {
+        return new AddNewAccount();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.add_new_account, container, false);
         txt_name = (EditText) rootView.findViewById(R.id.txt_name);
-        if(txt_name.getText().toString().length() == 0) {
+        if (txt_name.getText().toString().length() == 0) {
             txt_name.setError("Name is required!");
         }
         txt_web = (EditText) rootView.findViewById(R.id.txt_web);
@@ -95,95 +94,96 @@ public class AddNewAccount extends Fragment implements View.OnClickListener {
         sessionId = b.getString("sessionId");
         restUrl = b.getString("restUrl");
         response = b.getString("accountDetails");
+        module_name = b.getString("module_name");
         // Check where request came from
         fromEdit = b.getBoolean("from_edit");   // if fromEdit Boolean true request came from Edit Button
         // Check what want to fill EditText
-        if(fromEdit == true){
+        if (fromEdit == true) {
             try {
-            dialog = new ProgressDialog(getActivity());
-            dialog.setMessage("Please wait..");
-            dialog.setIndeterminate(true);
-            dialog.setCancelable(false);
-            dialog.show();
+                dialog = new ProgressDialog(getActivity());
+                dialog.setMessage("Please wait..");
+                dialog.setIndeterminate(true);
+                dialog.setCancelable(false);
+                dialog.show();
 
-            JSONObject name_value_list = new JSONObject(response);
-            Log.d("jsonObj", "" + name_value_list.toString());
+                JSONObject name_value_list = new JSONObject(response);
+                Log.d("jsonObj", "" + name_value_list.toString());
 
-           JSONObject name_ = name_value_list.getJSONObject("name");
-            name = name_.getString("value");
+                JSONObject name_ = name_value_list.getJSONObject("name");
+                name = name_.getString("value");
 
-            JSONObject phoneFax = name_value_list.getJSONObject("phone_fax");
-            phone_fax = phoneFax.getString("value");
-            Log.d("phone_fax", phone_fax);
+                JSONObject phoneFax = name_value_list.getJSONObject("phone_fax");
+                phone_fax = phoneFax.getString("value");
+                Log.d("phone_fax", phone_fax);
 
-            JSONObject billingAddressStreet = name_value_list
-                    .getJSONObject("billing_address_street");
-             billing_address_street = billingAddressStreet.getString("value");
+                JSONObject billingAddressStreet = name_value_list
+                        .getJSONObject("billing_address_street");
+                billing_address_street = billingAddressStreet.getString("value");
 
-            JSONObject billing_address_street2 = name_value_list
-                    .getJSONObject("billing_address_street_2");
-            billing_address_street_2 = billing_address_street2
-                    .getString("value");
+                JSONObject billing_address_street2 = name_value_list
+                        .getJSONObject("billing_address_street_2");
+                billing_address_street_2 = billing_address_street2
+                        .getString("value");
 
-            JSONObject billing_address_street3 = name_value_list
-                    .getJSONObject("billing_address_street_3");
-            billing_address_street_3 = billing_address_street3
-                    .getString("value");
+                JSONObject billing_address_street3 = name_value_list
+                        .getJSONObject("billing_address_street_3");
+                billing_address_street_3 = billing_address_street3
+                        .getString("value");
 
-            JSONObject billing_address_street4 = name_value_list
-                    .getJSONObject("billing_address_street_4");
-            billing_address_street_4 = billing_address_street4
-                    .getString("value");
+                JSONObject billing_address_street4 = name_value_list
+                        .getJSONObject("billing_address_street_4");
+                billing_address_street_4 = billing_address_street4
+                        .getString("value");
 
-            JSONObject billingAddressCity = name_value_list
-                    .getJSONObject("billing_address_city");
-            billing_address_city = billingAddressCity.getString("value");
+                JSONObject billingAddressCity = name_value_list
+                        .getJSONObject("billing_address_city");
+                billing_address_city = billingAddressCity.getString("value");
 
-            JSONObject billingAddressState = name_value_list
-                    .getJSONObject("billing_address_state");
-            billing_address_state = phoneFax.getString("value");
+                JSONObject billingAddressState = name_value_list
+                        .getJSONObject("billing_address_state");
+                billing_address_state = phoneFax.getString("value");
 
-            JSONObject billingAddressPostalcode = name_value_list
-                    .getJSONObject("billing_address_postalcode");
-            billing_address_postalcode = billingAddressPostalcode
-                    .getString("value");
+                JSONObject billingAddressPostalcode = name_value_list
+                        .getJSONObject("billing_address_postalcode");
+                billing_address_postalcode = billingAddressPostalcode
+                        .getString("value");
 
-            JSONObject billingAddressCountry = name_value_list
-                    .getJSONObject("billing_address_country");
-            billing_address_country = billingAddressCountry
-                    .getString("value");
+                JSONObject billingAddressCountry = name_value_list
+                        .getJSONObject("billing_address_country");
+                billing_address_country = billingAddressCountry
+                        .getString("value");
 
-            JSONObject phoneOffice = name_value_list
-                    .getJSONObject("phone_office");
-            phone_office = phoneOffice.getString("value");
+                JSONObject phoneOffice = name_value_list
+                        .getJSONObject("phone_office");
+                phone_office = phoneOffice.getString("value");
 
-            JSONObject website_ = name_value_list.getJSONObject("website");
-            website = website_.getString("value");
+                JSONObject website_ = name_value_list.getJSONObject("website");
+                website = website_.getString("value");
 
-            JSONObject email1_ = name_value_list.getJSONObject("email1");
-            email1 = email1_.getString("value");
+                JSONObject email1_ = name_value_list.getJSONObject("email1");
+                email1 = email1_.getString("value");
 
-            JSONObject id_ = name_value_list.getJSONObject("id");
-            id = id_.getString("value");
+                JSONObject id_ = name_value_list.getJSONObject("id");
+                id = id_.getString("value");
 
-            txt_name.setText(name);
-            txt_oPhone.setText(phone_office);
-            txt_fax.setText(phone_fax);
-            txt_email.setText(email1);
-            txt_web.setText(website);
-            txt_bStreet.setText(billing_address_street + ", " + billing_address_street2 + ", " + billing_address_street3 + ", " + billing_address_street4);
-            txt_bCity.setText(billing_address_city);
-            txt_bState.setText(billing_address_state);
-            txt_bPostal.setText(billing_address_postalcode);
-            txt_bCountry.setText(billing_address_country);
+                txt_name.setText(name);
+                txt_oPhone.setText(phone_office);
+                txt_fax.setText(phone_fax);
+                txt_email.setText(email1);
+                txt_web.setText(website);
+                txt_bStreet.setText(billing_address_street + ", " + billing_address_street2 + ", " + billing_address_street3 + ", " + billing_address_street4);
+                txt_bCity.setText(billing_address_city);
+                txt_bState.setText(billing_address_state);
+                txt_bPostal.setText(billing_address_postalcode);
+                txt_bCountry.setText(billing_address_country);
 
-            dialog.dismiss();
+                dialog.dismiss();
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return rootView;
     }
@@ -192,9 +192,9 @@ public class AddNewAccount extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_save:
-                if(fromEdit == true) {
-                   new UpdateEntryAccount().execute(sessionId, restUrl);
-                }else {
+                if (fromEdit == true) {
+                    new UpdateRecord().execute(sessionId, restUrl);
+                } else {
                     if (txt_name.getText().toString().equals("") || txt_name.getText().toString().equals(null)) {
                         new AlertDialog.Builder(getActivity())
                                 .setTitle("Error !")
@@ -208,15 +208,16 @@ public class AddNewAccount extends Fragment implements View.OnClickListener {
 
                     } else {
                         // Execute AddNewEntryAccount class
-                        new AddNewEntryAccount().execute(sessionId, restUrl);
+                        new AddRecord().execute(sessionId, restUrl);
                     }
                 }
                 break;
             case R.id.btn_cancel:
-                AddNewItem_SelectMenu fragment = new AddNewItem_SelectMenu();
+                Fragment_Entries fragment = new Fragment_Entries();
                 Bundle b = new Bundle();
                 b.putString("restUrl", restUrl);
                 b.putString("sessionId", sessionId);
+                b.putString("module_name", module_name);
                 fragment.setArguments(b);
                 getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, TAG).addToBackStack(TAG).commit();
                 break;
@@ -226,7 +227,7 @@ public class AddNewAccount extends Fragment implements View.OnClickListener {
         }
     }
 
-    class UpdateEntryAccount extends AsyncTask<String, Void, Boolean>{
+    class UpdateRecord extends AsyncTask<String, Void, Boolean> {
         private Map<String, String> nameValueList;
         private String name = txt_name.getText().toString();
         private String website = txt_web.getText().toString();
@@ -267,7 +268,7 @@ public class AddNewAccount extends Fragment implements View.OnClickListener {
             boolean successful = false;
             Map<String, Object> data = new LinkedHashMap<String, Object>();
             data.put(SESSION, sessionId);
-            data.put(MODULE_NAME, "Accounts");
+            data.put(MODULE_NAME, module_name);
 
             try {
                 JSONArray nameValueArray = new JSONArray();
@@ -345,7 +346,7 @@ public class AddNewAccount extends Fragment implements View.OnClickListener {
         @Override
         protected void onPostExecute(Boolean result) {
             dialog.dismiss();
-            if(result != true){
+            if (result != true) {
                 new AlertDialog.Builder(getActivity())
                         .setTitle("Alert")
                         .setMessage("Record Successfully Added.")
@@ -355,7 +356,7 @@ public class AddNewAccount extends Fragment implements View.OnClickListener {
                                 Bundle b = new Bundle();
                                 b.putString("restUrl", restUrl);
                                 b.putString("sessionId", sessionId);
-                                b.putString("moduleName", "Accounts");
+                                b.putString("moduleName", module_name);
                                 fragment.setArguments(b);
                                 getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, TAG).addToBackStack(TAG).commit();
                             }
@@ -364,7 +365,7 @@ public class AddNewAccount extends Fragment implements View.OnClickListener {
         }
     }
 
-    class AddNewEntryAccount extends AsyncTask<String, Void, Boolean> {
+    class AddRecord extends AsyncTask<String, Void, Boolean> {
         private String url, sessionId, moduleName;
         private Map<String, String> nameValueList;
         private String name = txt_name.getText().toString();
@@ -406,7 +407,7 @@ public class AddNewAccount extends Fragment implements View.OnClickListener {
             boolean successful = false;
             Map<String, Object> data = new LinkedHashMap<String, Object>();
             data.put(SESSION, sessionId);
-            data.put(MODULE_NAME, "Accounts");
+            data.put(MODULE_NAME, module_name);
 
             try {
                 JSONArray nameValueArray = new JSONArray();
@@ -481,7 +482,7 @@ public class AddNewAccount extends Fragment implements View.OnClickListener {
         @Override
         protected void onPostExecute(Boolean result) {
             pDialog.dismiss();
-            if(result != true){
+            if (result != true) {
                 new AlertDialog.Builder(getActivity())
                         .setTitle("Alert")
                         .setMessage("Record Successfully Added.")
@@ -491,7 +492,7 @@ public class AddNewAccount extends Fragment implements View.OnClickListener {
                                 Bundle b = new Bundle();
                                 b.putString("restUrl", restUrl);
                                 b.putString("sessionId", sessionId);
-                                b.putString("moduleName", "Accounts");
+                                b.putString("module_name", module_name);
                                 fragment.setArguments(b);
                                 getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, TAG).addToBackStack(TAG).commit();
                             }

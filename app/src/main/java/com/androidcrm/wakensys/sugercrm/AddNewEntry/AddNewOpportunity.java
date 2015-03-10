@@ -60,11 +60,6 @@ import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.SE
 public class AddNewOpportunity extends Fragment implements View.OnClickListener {
 
     public static final String TAG = AddNewOpportunity.class.getSimpleName();
-
-    public static AddNewOpportunity newInstance() {
-        return new AddNewOpportunity();
-    }
-
     private String sessionId, restUrl, leadSource, typeName, salesStage, id, currency, module_name, response, name, currency_name, amount, account_name, description, campaign_name, lead_source, opportunity_type, date_closed, next_step, probability, sales_stage;
     private boolean from_edit = false;
     private EditText txt_name, txt_amount, txt_probability, txt_next_step, txt_description, txt_account_name, txt_expected_close_date, txt_campaign;
@@ -73,6 +68,10 @@ public class AddNewOpportunity extends Fragment implements View.OnClickListener 
     private List<String> currencyItem_, salesStageItem_, sourceLeadItem_, typeItem_;
     private ArrayAdapter<String> currencyDataAdapter_, salesDataAdapter_, leadSourceDataAdapter_, typeDataAdapter_;
     private int mYear, mMonth, mDate;
+
+    public static AddNewOpportunity newInstance() {
+        return new AddNewOpportunity();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -297,20 +296,13 @@ public class AddNewOpportunity extends Fragment implements View.OnClickListener 
                 }
                 break;
             case R.id.btn_cancel:
-                new AlertDialog.Builder(getActivity())
-                        .setTitle("Alert")
-                        .setMessage("Record Successfully Added.")
-                        .setNegativeButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                Fragment_Entries fragment = new Fragment_Entries();
-                                Bundle b = new Bundle();
-                                b.putString("restUrl", restUrl);
-                                b.putString("sessionId", sessionId);
-                                b.putString("module_name", module_name);
-                                fragment.setArguments(b);
-                                getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, TAG).addToBackStack(TAG).commit();
-                            }
-                        }).setIcon(android.R.drawable.ic_dialog_alert).show();
+                Fragment_Entries fragment = new Fragment_Entries();
+                Bundle b = new Bundle();
+                b.putString("restUrl", restUrl);
+                b.putString("sessionId", sessionId);
+                b.putString("module_name", module_name);
+                fragment.setArguments(b);
+                getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, TAG).addToBackStack(TAG).commit();
                 break;
             case R.id.date:
                 final View dialogView1 = View.inflate(getActivity(), R.layout.date_time_picker, null);
@@ -544,7 +536,7 @@ public class AddNewOpportunity extends Fragment implements View.OnClickListener 
             currency = params[5];
             Map<String, Object> data = new LinkedHashMap<String, Object>();
             data.put(SESSION, sessionId);
-            data.put(MODULE_NAME, "Opportunities");
+            data.put(MODULE_NAME, module_name);
 
             try {
                 JSONArray nameValueArray = new JSONArray();

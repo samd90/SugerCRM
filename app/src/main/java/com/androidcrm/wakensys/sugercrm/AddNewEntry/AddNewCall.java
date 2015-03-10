@@ -66,26 +66,25 @@ import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.SE
 public class AddNewCall extends Fragment implements View.OnClickListener {
 
     public static final String TAG = AddNewCall.class.getSimpleName();
-
-    public static AddNewCall newInstance(){
-        return new AddNewCall();
-    }
-
-    private String sessionId, restUrl, response,id,start_date, start_time;
-    private EditText txt_subject, txt_duration, txt_parent_name,txt_date, txt_time_;
+    private String sessionId, restUrl, response, id, start_date, start_time;
+    private EditText txt_subject, txt_duration, txt_parent_name, txt_date, txt_time_;
     private Button btn_save, btn_cancel, btn_date, btn_time;
     // Variable for storing current date and time
     private int mYear, mMonth, mDay, mHour, mMinute;
     private Spinner durationMin, status_1, status_2, relatedTo_moduleName, reminder_time, email_reminder_time;
-    private List<String> durationList, status1,status2, relatedModuleNames, timePeriodList;
+    private List<String> durationList, status1, status2, relatedModuleNames, timePeriodList;
     private ArrayAdapter<String> durationAdapter, status1Adapter, status2Adapter, relatedModuleNameAdapter, RemindertimePeriodAdapter;
     private CheckBox popup, email_all_invites;
-    private String popupRemainder, emailRemainder,durationMinutes, status_1_name, status_2_name, reminder_time_period, related_module_name, email_reminder_time_period;
+    private String popupRemainder, module_name, emailRemainder, durationMinutes, status_1_name, status_2_name, reminder_time_period, related_module_name, email_reminder_time_period;
     private boolean fromEdit = false;
     private ProgressDialog dialog;
 
+    public static AddNewCall newInstance() {
+        return new AddNewCall();
+    }
+
     @Override
-    public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.add_new_calls, container, false);
 
         // Get sessionId and RestUrl from AddNewItem_selectMenu class
@@ -93,6 +92,7 @@ public class AddNewCall extends Fragment implements View.OnClickListener {
         sessionId = b.getString("sessionId");
         restUrl = b.getString("restUrl");
         response = b.getString("callDetails");
+        module_name = b.getString("module_name");
         // Check where request came from
         fromEdit = b.getBoolean("from_edit");   // if fromEdit Boolean true request came from Edit Button
 
@@ -123,8 +123,67 @@ public class AddNewCall extends Fragment implements View.OnClickListener {
         btn_time.setOnClickListener(this);
         btn_cancel.setOnClickListener(this);
 
-        if(fromEdit == true){
-            try{
+        // Array list for DurationMinutes
+        durationList = new ArrayList<String>();
+        durationList.add("00");
+        durationList.add("15");
+        durationList.add("30");
+        durationList.add("45");
+        // Array list for Status Spinner 1
+        status1 = new ArrayList<String>();
+        status1.add("Indound");
+        status1.add("Outbound");
+        // Array list for Status Spinner 2
+        status2 = new ArrayList<String>();
+        status2.add("Planned");
+        status2.add("Held");
+        status2.add("Not Held");
+        // Array list for Related to Modle names
+        relatedModuleNames = new ArrayList<String>();
+        relatedModuleNames.add("Account");
+        relatedModuleNames.add("Bug");
+        relatedModuleNames.add("Case");
+        relatedModuleNames.add("Contact");
+        relatedModuleNames.add("Lead");
+        relatedModuleNames.add("Opportunity");
+        relatedModuleNames.add("Project");
+        relatedModuleNames.add("Project Task");
+        relatedModuleNames.add("Target");
+        relatedModuleNames.add("Task");
+        // Array List for Time Periods
+        timePeriodList = new ArrayList<String>();
+        timePeriodList.add("1 minutes prior");
+        timePeriodList.add("5 minutes prior");
+        timePeriodList.add("10 minutes prior");
+        timePeriodList.add("15 minutes prior");
+        timePeriodList.add("30 minutes prior");
+        timePeriodList.add("1 hour prior");
+        timePeriodList.add("2 hour prior");
+        timePeriodList.add("3 hour prior");
+        timePeriodList.add("5 hour prior");
+        timePeriodList.add("1 day prior");
+        // Set array lists to Array adapters
+        status1Adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, status1);
+        status2Adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, status2);
+        relatedModuleNameAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, relatedModuleNames);
+        RemindertimePeriodAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, timePeriodList);
+        durationAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, durationList);
+
+        status1Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        durationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        status2Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        relatedModuleNameAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        RemindertimePeriodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Set Array Adapter to Spinner
+        status_1.setAdapter(status1Adapter);
+        status_2.setAdapter(status2Adapter);
+        relatedTo_moduleName.setAdapter(relatedModuleNameAdapter);
+        reminder_time.setAdapter(RemindertimePeriodAdapter);
+        email_reminder_time.setAdapter(RemindertimePeriodAdapter);
+        durationMin.setAdapter(durationAdapter);
+        // Set OnItemSelectListeners to Spinners
+        if (fromEdit == true) {
+            try {
                 dialog = new ProgressDialog(getActivity());
                 dialog.setMessage("Please Wait..");
                 dialog.setIndeterminate(true);
@@ -182,114 +241,53 @@ public class AddNewCall extends Fragment implements View.OnClickListener {
                         .getJSONObject("id");
                 id = id_.getString("value");
 
-                // Split date start in to date and time two string
-                String a[] = date_start.split(" ");
-                for(int i = 0;i < a.length ; i++){
-                    start_date = a[i];
-                    start_time = a[i];
+                if (date_start != null && !date_start.equals("")) {
+                    // Split date start in to date and time two string
+                    String a[] = date_start.split(" ");
+                    start_date = a[0];
+                    start_time = a[1];
                 }
-
                 // Put String values to Textviews
                 txt_subject.setText(name);
                 txt_duration.setText(duration_hours);
                 txt_parent_name.setText(parent_name);
                 txt_date.setText(start_date);
                 txt_time_.setText(start_time);
-                if(reminder_checked == true){
+                if (reminder_checked == true) {
                     popup.setChecked(true);
                     reminder_time.setVisibility(View.VISIBLE);
                     popupRemainder = "true";
-                }else if(reminder_checked == false){
+                } else if (reminder_checked == false) {
                     reminder_time.setVisibility(View.GONE);
                     popup.setChecked(false);
                     popupRemainder = "false";
                 }
 
-                if(email_reminder_checked == true){
+                if (email_reminder_checked == true) {
                     email_all_invites.setChecked(true);
                     email_reminder_time.setVisibility(View.VISIBLE);
                     emailRemainder = "true";
-                }else if(email_reminder_checked == false){
+                } else if (email_reminder_checked == false) {
                     email_all_invites.setChecked(false);
                     email_reminder_time.setVisibility(View.GONE);
                     emailRemainder = "false";
                 }
 
-                durationMin.setSelection(((ArrayAdapter<String>)durationMin.getAdapter()).getPosition(duration_minutes));
-                status_1.setSelection(((ArrayAdapter<String>)status_1.getAdapter()).getPosition(direction));
-                status_2.setSelection(((ArrayAdapter<String>)status_2.getAdapter()).getPosition(status));
-                reminder_time.setSelection(((ArrayAdapter<String>)reminder_time.getAdapter()).getPosition(reminder_time_value));
-                email_reminder_time.setSelection(((ArrayAdapter<String>)email_reminder_time.getAdapter()).getPosition(email_reminder_time_value));
-                relatedTo_moduleName.setSelection(((ArrayAdapter<String>)relatedTo_moduleName.getAdapter()).getPosition(parent_type));
+                durationMin.setSelection(((ArrayAdapter<String>) durationMin.getAdapter()).getPosition(duration_minutes));
+                status_1.setSelection(((ArrayAdapter<String>) status_1.getAdapter()).getPosition(direction));
+                status_2.setSelection(((ArrayAdapter<String>) status_2.getAdapter()).getPosition(status));
+                reminder_time.setSelection(((ArrayAdapter<String>) reminder_time.getAdapter()).getPosition(reminder_time_value));
+                email_reminder_time.setSelection(((ArrayAdapter<String>) email_reminder_time.getAdapter()).getPosition(email_reminder_time_value));
+                relatedTo_moduleName.setSelection(((ArrayAdapter<String>) relatedTo_moduleName.getAdapter()).getPosition(parent_type));
 
             } catch (JSONException e) {
                 Log.e("My App", "Could not parse JSON");
                 e.printStackTrace();
-            }	catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             dialog.dismiss();
         }
-
-        // Array list for DurationMinutes
-        durationList = new ArrayList<String>();
-        durationList.add("00");
-        durationList.add("15");
-        durationList.add("30");
-        durationList.add("45");
-        // Array list for Status Spinner 1
-        status1 = new ArrayList<String>();
-        status1.add("Indound");
-        status1.add("Outbound");
-        // Array list for Status Spinner 2
-        status2 = new ArrayList<String>();
-        status2.add("Planned");
-        status2.add("Held");
-        status2.add("Not Held");
-        // Array list for Related to Modle names
-        relatedModuleNames = new ArrayList<String>();
-        relatedModuleNames.add("Account");
-        relatedModuleNames.add("Bug");
-        relatedModuleNames.add("Case");
-        relatedModuleNames.add("Contact");
-        relatedModuleNames.add("Lead");
-        relatedModuleNames.add("Opportunity");
-        relatedModuleNames.add("Project");
-        relatedModuleNames.add("Project Task");
-        relatedModuleNames.add("Target");
-        relatedModuleNames.add("Task");
-        // Array List for Time Periods
-        timePeriodList = new ArrayList<String>();
-        timePeriodList.add("1 minutes prior");
-        timePeriodList.add("5 minutes prior");
-        timePeriodList.add("10 minutes prior");
-        timePeriodList.add("15 minutes prior");
-        timePeriodList.add("30 minutes prior");
-        timePeriodList.add("1 hour prior");
-        timePeriodList.add("2 hour prior");
-        timePeriodList.add("3 hour prior");
-        timePeriodList.add("5 hour prior");
-        timePeriodList.add("1 day prior");
-        // Set array lists to Array adapters
-        status1Adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, status1);
-        status2Adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, status2);
-        relatedModuleNameAdapter =  new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, relatedModuleNames);
-        RemindertimePeriodAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, timePeriodList);
-        durationAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, durationList);
-
-        status1Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        durationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        status2Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        relatedModuleNameAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        RemindertimePeriodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Set Array Adapter to Spinner
-        status_1.setAdapter(status1Adapter);
-        status_2.setAdapter(status2Adapter);
-        relatedTo_moduleName.setAdapter(relatedModuleNameAdapter);
-        reminder_time.setAdapter(RemindertimePeriodAdapter);
-        email_reminder_time.setAdapter(RemindertimePeriodAdapter);
-        durationMin.setAdapter(durationAdapter);
-        // Set OnItemSelectListeners to Spinners
         durationMin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -362,10 +360,10 @@ public class AddNewCall extends Fragment implements View.OnClickListener {
         popup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(popup.isChecked() == true){
-                   reminder_time.setVisibility(View.VISIBLE);
+                if (popup.isChecked() == true) {
+                    reminder_time.setVisibility(View.VISIBLE);
                     popupRemainder = "true";
-                }else if(popup.isChecked() == false){
+                } else if (popup.isChecked() == false) {
                     reminder_time.setVisibility(View.GONE);
                     popupRemainder = "false";
                 }
@@ -375,10 +373,10 @@ public class AddNewCall extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 // Set Visibility for reminder Checkboxes
-                if(email_all_invites.isChecked() == true){
+                if (email_all_invites.isChecked() == true) {
                     email_reminder_time.setVisibility(View.VISIBLE);
                     emailRemainder = "true";
-                }else if(email_all_invites.isChecked() == false){
+                } else if (email_all_invites.isChecked() == false) {
                     email_reminder_time.setVisibility(View.GONE);
                     emailRemainder = "false";
                 }
@@ -390,7 +388,7 @@ public class AddNewCall extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
 
             case R.id.time:
                 final View dialogView1 = View.inflate(getActivity(), R.layout.date_time_picker, null);
@@ -414,27 +412,29 @@ public class AddNewCall extends Fragment implements View.OnClickListener {
                         SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
                         String end_time = format1.format(time1);
                         txt_time_.setText(end_time);
-                        SimpleDateFormat frmDate1 =new SimpleDateFormat("yyyy-MM-dd");
-                        String end_date=frmDate1.format(time1);
+                        SimpleDateFormat frmDate1 = new SimpleDateFormat("yyyy-MM-dd");
+                        String end_date = frmDate1.format(time1);
                         txt_date.setText(end_date);
 
                         alertDialog1.dismiss();
-                    }});
+                    }
+                });
                 alertDialog1.setView(dialogView1);
                 alertDialog1.show();
                 break;
             case R.id.btn_save:
-                if(fromEdit == true){
-                    new UpdateEntryCall().execute(popupRemainder, emailRemainder, durationMinutes, status_1_name, status_2_name, related_module_name, restUrl, sessionId, email_reminder_time_period, reminder_time_period, id);
-                }else {
-                    new AddNewEntryAccount().execute(popupRemainder, emailRemainder, durationMinutes, status_1_name, status_2_name, related_module_name, restUrl, sessionId, email_reminder_time_period, reminder_time_period);
+                if (fromEdit == true) {
+                    new UpdateRecord().execute(popupRemainder, emailRemainder, durationMinutes, status_1_name, status_2_name, related_module_name, restUrl, sessionId, email_reminder_time_period, reminder_time_period, id);
+                } else {
+                    new AddRecord().execute(popupRemainder, emailRemainder, durationMinutes, status_1_name, status_2_name, related_module_name, restUrl, sessionId, email_reminder_time_period, reminder_time_period);
                 }
                 break;
             case R.id.btn_cancel:
-                AddNewItem_SelectMenu fragment = new AddNewItem_SelectMenu();
+                Fragment_Entries fragment = new Fragment_Entries();
                 Bundle b = new Bundle();
                 b.putString("restUrl", restUrl);
                 b.putString("sessionId", sessionId);
+                b.putString("module_name", module_name);
                 fragment.setArguments(b);
                 getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, TAG).addToBackStack(TAG).commit();
                 break;
@@ -443,8 +443,9 @@ public class AddNewCall extends Fragment implements View.OnClickListener {
         }
 
     }
-    class UpdateEntryCall extends AsyncTask<String, Void, Boolean>{
-        private String durationMinutes, status_1_name, status_2_name, reminder_time_period, related_module_name,email_reminder_time_period;
+
+    class UpdateRecord extends AsyncTask<String, Void, Boolean> {
+        private String durationMinutes, status_1_name, status_2_name, reminder_time_period, related_module_name, email_reminder_time_period;
 
         private Map<String, String> nameValueList;
         private ProgressDialog dialog;
@@ -494,7 +495,7 @@ public class AddNewCall extends Fragment implements View.OnClickListener {
             boolean successful = false;
             Map<String, Object> data = new LinkedHashMap<String, Object>();
             data.put(SESSION, sessionId);
-            data.put(MODULE_NAME, "Calls");
+            data.put(MODULE_NAME, module_name);
 
             try {
                 JSONArray nameValueArray = new JSONArray();
@@ -505,7 +506,7 @@ public class AddNewCall extends Fragment implements View.OnClickListener {
                 subjectValue.put("value", subject);
                 nameValueArray.put(subjectValue);
                 dateTimeValue.put("name", "date_start");
-                dateTimeValue.put("value", date+" "+ time);
+                dateTimeValue.put("value", date + " " + time);
                 nameValueArray.put(dateTimeValue);
                 durationHoursValue.put("name", "duration_hours");
                 durationHoursValue.put("value", durationHours);
@@ -563,7 +564,7 @@ public class AddNewCall extends Fragment implements View.OnClickListener {
                 String response = EntityUtils.toString(res.getEntity()).toString();
                 JSONObject jsonResponse = new JSONObject(response);
                 Log.i(TAG, "setEntry response : " + response);
-                Log.d(TAG,nameValuePairs.toString());
+                Log.d(TAG, nameValuePairs.toString());
 
 
             } catch (IOException ioe) {
@@ -577,10 +578,11 @@ public class AddNewCall extends Fragment implements View.OnClickListener {
             }
             return successful;
         }
+
         @Override
         protected void onPostExecute(Boolean result) {
             dialog.dismiss();
-            if(result != true){
+            if (result != true) {
                 new AlertDialog.Builder(getActivity())
                         .setTitle("Alert")
                         .setMessage("Record Successfully Added.")
@@ -590,7 +592,7 @@ public class AddNewCall extends Fragment implements View.OnClickListener {
                                 Bundle b = new Bundle();
                                 b.putString("restUrl", restUrl);
                                 b.putString("sessionId", sessionId);
-                                b.putString("moduleName", "Calls");
+                                b.putString("module_name", module_name);
                                 fragment.setArguments(b);
                                 getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, TAG).addToBackStack(TAG).commit();
                             }
@@ -600,8 +602,8 @@ public class AddNewCall extends Fragment implements View.OnClickListener {
 
     }
 
-    class AddNewEntryAccount extends AsyncTask<String , Void, Boolean> {
-        private String durationMinutes, status_1_name, status_2_name, reminder_time_period, related_module_name,email_reminder_time_period;
+    class AddRecord extends AsyncTask<String, Void, Boolean> {
+        private String durationMinutes, status_1_name, status_2_name, reminder_time_period, related_module_name, email_reminder_time_period;
 
         private Map<String, String> nameValueList;
         private ProgressDialog dialog;
@@ -653,42 +655,42 @@ public class AddNewCall extends Fragment implements View.OnClickListener {
 
             try {
                 JSONArray nameValueArray = new JSONArray();
-                        subjectValue.put("name", "name");
-                        subjectValue.put("value", subject);
-                        nameValueArray.put(subjectValue);
-                        dateTimeValue.put("name", "date_start");
-                        dateTimeValue.put("value", date+" "+ time);
-                        nameValueArray.put(dateTimeValue);
-                        durationHoursValue.put("name", "duration_hours");
-                        durationHoursValue.put("value", durationHours);
-                        nameValueArray.put(durationHoursValue);
-                        durationMinutesValue.put("name", "duration_minutes");
-                        durationMinutesValue.put("value", durationMinutes);
-                        nameValueArray.put(durationMinutesValue);
-                        directionValue.put("name", "direction");
-                        directionValue.put("value", status_1_name);
-                        nameValueArray.put(directionValue);
-                        statusValue.put("name", "status");
-                        statusValue.put("value", status_2_name);
-                        nameValueArray.put(statusValue);
-                        parent_nameValue.put("name", "parent_name");
-                        parent_nameValue.put("value", parentName);
-                        nameValueArray.put(parent_nameValue);
-                        parent_typeValue.put("name", "parent_type");
-                        parent_typeValue.put("value", related_module_name);
-                        nameValueArray.put(parent_typeValue);
-                        emailRemainderValue.put("name", "email_reminder_checked");
-                        emailRemainderValue.put("value", emailRemainder);
-                        nameValueArray.put(emailRemainderValue);
-                        popupRemainderValue.put("name", "reminder_checked");
-                        popupRemainderValue.put("value", popupRemainder);
-                        nameValueArray.put(popupRemainderValue);
-                        emailRemainderTimeValue.put("name", "email_reminder_time");
-                        emailRemainderTimeValue.put("value", email_reminder_time_period);
-                        nameValueArray.put(emailRemainderTimeValue);
-                        RemainderTimeValue.put("name", "reminder_time");
-                        RemainderTimeValue.put("value", reminder_time_period);
-                        nameValueArray.put(RemainderTimeValue);
+                subjectValue.put("name", "name");
+                subjectValue.put("value", subject);
+                nameValueArray.put(subjectValue);
+                dateTimeValue.put("name", "date_start");
+                dateTimeValue.put("value", date + " " + time);
+                nameValueArray.put(dateTimeValue);
+                durationHoursValue.put("name", "duration_hours");
+                durationHoursValue.put("value", durationHours);
+                nameValueArray.put(durationHoursValue);
+                durationMinutesValue.put("name", "duration_minutes");
+                durationMinutesValue.put("value", durationMinutes);
+                nameValueArray.put(durationMinutesValue);
+                directionValue.put("name", "direction");
+                directionValue.put("value", status_1_name);
+                nameValueArray.put(directionValue);
+                statusValue.put("name", "status");
+                statusValue.put("value", status_2_name);
+                nameValueArray.put(statusValue);
+                parent_nameValue.put("name", "parent_name");
+                parent_nameValue.put("value", parentName);
+                nameValueArray.put(parent_nameValue);
+                parent_typeValue.put("name", "parent_type");
+                parent_typeValue.put("value", related_module_name);
+                nameValueArray.put(parent_typeValue);
+                emailRemainderValue.put("name", "email_reminder_checked");
+                emailRemainderValue.put("value", emailRemainder);
+                nameValueArray.put(emailRemainderValue);
+                popupRemainderValue.put("name", "reminder_checked");
+                popupRemainderValue.put("value", popupRemainder);
+                nameValueArray.put(popupRemainderValue);
+                emailRemainderTimeValue.put("name", "email_reminder_time");
+                emailRemainderTimeValue.put("value", email_reminder_time_period);
+                nameValueArray.put(emailRemainderTimeValue);
+                RemainderTimeValue.put("name", "reminder_time");
+                RemainderTimeValue.put("value", reminder_time_period);
+                nameValueArray.put(RemainderTimeValue);
 
                 data.put(NAME_VALUE_LIST, nameValueArray);
 
@@ -715,7 +717,7 @@ public class AddNewCall extends Fragment implements View.OnClickListener {
                 String response = EntityUtils.toString(res.getEntity()).toString();
                 JSONObject jsonResponse = new JSONObject(response);
                 Log.i(TAG, "setEntry response : " + response);
-                Log.d(TAG,nameValuePairs.toString());
+                Log.d(TAG, nameValuePairs.toString());
 
 
             } catch (IOException ioe) {
@@ -729,10 +731,11 @@ public class AddNewCall extends Fragment implements View.OnClickListener {
             }
             return successful;
         }
+
         @Override
         protected void onPostExecute(Boolean result) {
             dialog.dismiss();
-            if(result != true){
+            if (result != true) {
                 new AlertDialog.Builder(getActivity())
                         .setTitle("Alert")
                         .setMessage("Record Successfully Added.")

@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+
 import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.INPUT_TYPE;
 import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.JSON;
 import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.METHOD;
@@ -25,6 +26,7 @@ import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.RE
 import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.REST_DATA;
 import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.SESSION;
 import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.SET_ENTRY;
+
 import com.androidcrm.wakensys.sugercrm.R;
 import com.androidcrm.wakensys.sugercrm.fragment.Fragment_Entries;
 
@@ -55,21 +57,22 @@ import java.util.Map;
 public class AddNewTargetList extends Fragment implements View.OnClickListener {
 
     public final static String TAG = AddNewTargetList.class.getSimpleName();
-
-    public static AddNewTargetList newInstance(){
-        return new AddNewTargetList();
-    }
     private Button btn_save, btn_cancel;
     private Spinner typeSpinner;
     private EditText txtName, txtDescription, txtDomain;
     private List<String> typeList;
     private ArrayAdapter<String> typeArrayAdapter;
-    private String typeName, sessionId, restUrl, moduleName;
+    private String typeName, sessionId, restUrl, module_name, id;
     private boolean from_edit = false;
     private ProgressDialog dialog;
+
+    public static AddNewTargetList newInstance() {
+        return new AddNewTargetList();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.add_new_targetlist,container,false);
+        View rootView = inflater.inflate(R.layout.add_new_targetlist, container, false);
         // Get Reference of Buttons
         btn_save = (Button) rootView.findViewById(R.id.btn_save);
         btn_cancel = (Button) rootView.findViewById(R.id.btn_cancel);
@@ -88,7 +91,7 @@ public class AddNewTargetList extends Fragment implements View.OnClickListener {
         typeList.add("Suppression List - By Id");
         typeList.add("Test");
         // Add Type Array to ArrayAdapter
-        typeArrayAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,typeList);
+        typeArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, typeList);
         typeArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         // Set TypeArray adapter to Spinner Type
@@ -100,13 +103,13 @@ public class AddNewTargetList extends Fragment implements View.OnClickListener {
         Bundle b = getArguments();
         sessionId = b.getString("sessionId");
         restUrl = b.getString("restUrl");
-        moduleName = b.getString("module_name");
+        module_name = b.getString("module_name");
         String response = b.getString("prospectListsDetails");
         from_edit = b.getBoolean("from_edit");
 
         // if Request came from TargetListEdit Button
-        if(from_edit == true){
-            try{
+        if (from_edit == true) {
+            try {
                 dialog = new ProgressDialog(getActivity());
                 dialog.setMessage("Please Wait..");
                 dialog.setIndeterminate(true);
@@ -128,19 +131,19 @@ public class AddNewTargetList extends Fragment implements View.OnClickListener {
 
                 JSONObject id_ = name_value_list
                         .getJSONObject("id");
-                String id = id_.getString("value");
+                id = id_.getString("value");
 
                 // Put String values to Textviews
                 txtName.setText(name);
                 txtDescription.setText(description);
                 // Set value in Spinner
-                typeSpinner.setSelection(((ArrayAdapter<String>)typeSpinner.getAdapter()).getPosition(list_type));
-                if(list_type.equals("Suppression List - By Domain")){
+                typeSpinner.setSelection(((ArrayAdapter<String>) typeSpinner.getAdapter()).getPosition(list_type));
+                if (list_type.equals("Suppression List - By Domain")) {
                     txtDomain.setVisibility(View.VISIBLE);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-            }	catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             dialog.dismiss();
@@ -150,7 +153,7 @@ public class AddNewTargetList extends Fragment implements View.OnClickListener {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 typeName = parent.getItemAtPosition(position).toString();
-                if(typeName.equals("Suppression List - By Domain")){
+                if (typeName.equals("Suppression List - By Domain")) {
                     txtDomain.setVisibility(View.VISIBLE);
                 }
             }
@@ -165,18 +168,31 @@ public class AddNewTargetList extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()){
+        switch (v.getId()) {
             case R.id.btn_save:
-                new AddNewTargetDetails().execute(sessionId, restUrl, moduleName, typeName);
+                if (from_edit == true) {
+                    new UpdateRecord().execute(sessionId, restUrl, module_name, typeName, id);
+
+                } else {
+                    new AddNewTargetDetails().execute(sessionId, restUrl, module_name, typeName);
+                }
                 break;
             case R.id.btn_cancel:
+                Fragment_Entries fragment = new Fragment_Entries();
+                Bundle b = new Bundle();
+                b.putString("restUrl", restUrl);
+                b.putString("sessionId", sessionId);
+                b.putString("module_name", module_name);
+                fragment.setArguments(b);
+                getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, TAG).addToBackStack(TAG).commit();
                 break;
             default:
                 break;
         }
 
     }
-    class AddNewTargetDetails extends AsyncTask<String, Void, Boolean>{
+
+    class AddNewTargetDetails extends AsyncTask<String, Void, Boolean> {
         private ProgressDialog pDialog;
         private String sessionId = null;
         private String restUrl = null;
@@ -206,14 +222,14 @@ public class AddNewTargetList extends Fragment implements View.OnClickListener {
             boolean successfull = false;
             sessionId = params[0];
             restUrl = params[1];
-            moduleName = params[2];
+            module_name = params[2];
             typeName = params[3];
 
             Map<String, Object> data = new LinkedHashMap<String, Object>();
             data.put(SESSION, sessionId);
-            data.put(MODULE_NAME, moduleName);
+            data.put(MODULE_NAME, module_name);
             try {
-            JSONArray nameValueArray = new JSONArray();
+                JSONArray nameValueArray = new JSONArray();
                 nameValue.put("name", "name");
                 nameValue.put("value", name);
                 nameValueArray.put(nameValue);
@@ -250,7 +266,7 @@ public class AddNewTargetList extends Fragment implements View.OnClickListener {
                 String response = EntityUtils.toString(res.getEntity()).toString();
                 JSONObject jsonResponse = new JSONObject(response);
                 Log.i(TAG, "setEntry response : " + response);
-                Log.d(TAG,nameValuePairs.toString());
+                Log.d(TAG, nameValuePairs.toString());
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -272,7 +288,7 @@ public class AddNewTargetList extends Fragment implements View.OnClickListener {
         @Override
         protected void onPostExecute(Boolean result) {
             pDialog.dismiss();
-            if(result != true){
+            if (result != true) {
                 new AlertDialog.Builder(getActivity())
                         .setTitle("Alert")
                         .setMessage("Record Successfully Added.")
@@ -282,7 +298,127 @@ public class AddNewTargetList extends Fragment implements View.OnClickListener {
                                 Bundle b = new Bundle();
                                 b.putString("restUrl", restUrl);
                                 b.putString("sessionId", sessionId);
-                                b.putString("moduleName", "Accounts");
+                                b.putString("module_name", module_name);
+                                fragment.setArguments(b);
+                                getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, TAG).addToBackStack(TAG).commit();
+                            }
+                        }).setIcon(android.R.drawable.ic_dialog_alert).show();
+            }
+        }
+    }
+
+    class UpdateRecord extends AsyncTask<String, Void, Boolean> {
+        private ProgressDialog pDialog;
+        private String sessionId = null;
+        private String restUrl = null;
+        private String module_name = null;
+        private String typeName = null;
+        private String name = txtName.getText().toString();
+        private String description = txtDescription.getText().toString();
+        private String domain = txtDomain.getText().toString();
+
+        private JSONObject nameValue = new JSONObject();
+        private JSONObject idValue = new JSONObject();
+        private JSONObject descripValue = new JSONObject();
+        private JSONObject domainValue = new JSONObject();
+        private JSONObject typeNameValue = new JSONObject();
+
+        @Override
+        protected void onPreExecute() {
+            pDialog = new ProgressDialog(getActivity());
+            pDialog.setMessage("Please Wait");
+            pDialog.setIndeterminate(true);
+            pDialog.setCancelable(false);
+            pDialog.show();
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            boolean successfull = false;
+            sessionId = params[0];
+            restUrl = params[1];
+            module_name = params[2];
+            typeName = params[3];
+            id = params[4];
+
+            Map<String, Object> data = new LinkedHashMap<String, Object>();
+            data.put(SESSION, sessionId);
+            data.put(MODULE_NAME, module_name);
+            try {
+                JSONArray nameValueArray = new JSONArray();
+                idValue.put("name", "id");
+                idValue.put("value", id);
+                nameValueArray.put(idValue);
+                nameValue.put("name", "name");
+                nameValue.put("value", name);
+                nameValueArray.put(nameValue);
+                descripValue.put("name", "description");
+                descripValue.put("value", description);
+                nameValueArray.put(descripValue);
+                domainValue.put("name", "domain_name");
+                domainValue.put("value", domain);
+                nameValueArray.put(domainValue);
+                typeNameValue.put("name", "list_type");
+                typeNameValue.put("value", typeName);
+                nameValueArray.put(typeNameValue);
+
+                data.put(NAME_VALUE_LIST, nameValueArray);
+                String rest_data = org.json.simple.JSONValue.toJSONString(data);
+
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpPost req = new HttpPost(restUrl);
+                // Add Data
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+                nameValuePairs.add(new BasicNameValuePair(METHOD, SET_ENTRY));
+                nameValuePairs.add(new BasicNameValuePair(INPUT_TYPE, JSON));
+                nameValuePairs.add(new BasicNameValuePair(RESPONSE_TYPE, JSON));
+                nameValuePairs.add(new BasicNameValuePair(REST_DATA, rest_data));
+                req.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+                // Send POST request
+                httpClient.getParams().setBooleanParameter(CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
+                HttpResponse res = httpClient.execute(req);
+                if (res.getEntity() == null) {
+                    Log.e(TAG, "FAILED TO CONNECT!");
+
+                }
+                String response = EntityUtils.toString(res.getEntity()).toString();
+                JSONObject jsonResponse = new JSONObject(response);
+                Log.i(TAG, "setEntry response : " + response);
+                Log.d(TAG, nameValuePairs.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                successfull = true;
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                successfull = true;
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+                successfull = true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                successfull = true;
+            }
+
+            return successfull;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            pDialog.dismiss();
+            if (result != true) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Alert")
+                        .setMessage("Record Successfully Added.")
+                        .setNegativeButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Fragment_Entries fragment = new Fragment_Entries();
+                                Bundle b = new Bundle();
+                                b.putString("restUrl", restUrl);
+                                b.putString("sessionId", sessionId);
+                                b.putString("module_name", module_name);
                                 fragment.setArguments(b);
                                 getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, TAG).addToBackStack(TAG).commit();
                             }

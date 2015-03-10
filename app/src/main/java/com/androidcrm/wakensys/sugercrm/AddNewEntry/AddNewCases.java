@@ -55,18 +55,18 @@ import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.SE
 public class AddNewCases extends Fragment implements View.OnClickListener {
 
     public static final String TAG = AddNewCases.class.getSimpleName();
-
-    public static AddNewCases newInstance() {
-        return new AddNewCases();
-    }
-
-    private String id, module_name, sessionId, restUrl, status_name, type_name, state_name, priority_name, response, account_name, resolution, type, status,state, priority,name;
+    private String id, module_name, sessionId, restUrl, status_name, type_name, state_name, priority_name, response, account_name, resolution, type, status, state, priority, name;
     private boolean from_edit = false;
     private EditText txt_name, txt_web, txt_oPhone, txt_resolution, txt_account_name;
     private Button btn_save, btn_cancel;
     private Spinner prioritySelectSpinner, stateSelectSpinner, statusSelectSpinner, typeSelectSpinner;
     private List<String> priorityItem, stateItem, statusItem, typeItem;
     private ArrayAdapter<String> priorityDataAdapter, stateDataAdapter, statusDataAdapter, typeDataAdapter;
+    private ProgressDialog dialog;
+
+    public static AddNewCases newInstance() {
+        return new AddNewCases();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -179,8 +179,15 @@ public class AddNewCases extends Fragment implements View.OnClickListener {
         btn_save.setOnClickListener(this);
         btn_cancel.setOnClickListener(this);
 
-        if(from_edit == true) {
+        if (from_edit == true) {
             try {
+
+                dialog = new ProgressDialog(getActivity());
+                dialog.setMessage("Please Wait..");
+                dialog.setIndeterminate(true);
+                dialog.setCancelable(false);
+                dialog.show();
+
                 JSONObject name_value_list = new JSONObject(response);
 
                 JSONObject name_ = name_value_list.getJSONObject("name");
@@ -219,6 +226,7 @@ public class AddNewCases extends Fragment implements View.OnClickListener {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            dialog.dismiss();
         }
         return rootView;
     }
@@ -227,18 +235,20 @@ public class AddNewCases extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_save:
-                if(from_edit == false){
+                if (from_edit == false) {
                     new EditRecord().execute(sessionId, restUrl, status_name, type_name, state_name, priority_name, id);
 
-                }else {
-                    new AddNewEntryAccount().execute(sessionId, restUrl, status_name, type_name, state_name, priority_name);
+                } else {
+                    new AddRecord().execute(sessionId, restUrl, status_name, type_name, state_name, priority_name);
 
-                }break;
+                }
+                break;
             case R.id.btn_cancel:
-                AddNewItem_SelectMenu fragment = new AddNewItem_SelectMenu();
+                Fragment_Entries fragment = new Fragment_Entries();
                 Bundle b = new Bundle();
                 b.putString("restUrl", restUrl);
                 b.putString("sessionId", sessionId);
+                b.putString("module_name", module_name);
                 fragment.setArguments(b);
                 getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, TAG).addToBackStack(TAG).commit();
                 break;
@@ -246,6 +256,7 @@ public class AddNewCases extends Fragment implements View.OnClickListener {
                 break;
         }
     }
+
     class EditRecord extends AsyncTask<String, Void, Boolean> {
         private String sessionId, restUrl, status_name, type_name, state_name, priority_name;
         private Map<String, String> nameValueList;
@@ -285,7 +296,7 @@ public class AddNewCases extends Fragment implements View.OnClickListener {
 
             Map<String, Object> data = new LinkedHashMap<String, Object>();
             data.put(SESSION, sessionId);
-            data.put(MODULE_NAME, "Accounts");
+            data.put(MODULE_NAME, module_name);
 
             try {
                 JSONArray nameValueArray = new JSONArray();
@@ -374,7 +385,7 @@ public class AddNewCases extends Fragment implements View.OnClickListener {
 
     }
 
-    class AddNewEntryAccount extends AsyncTask<String, Void, Boolean> {
+    class AddRecord extends AsyncTask<String, Void, Boolean> {
         private String sessionId, restUrl, status_name, type_name, state_name, priority_name;
         private Map<String, String> nameValueList;
         private ProgressDialog pDialog;
@@ -411,7 +422,7 @@ public class AddNewCases extends Fragment implements View.OnClickListener {
 
             Map<String, Object> data = new LinkedHashMap<String, Object>();
             data.put(SESSION, sessionId);
-            data.put(MODULE_NAME, "Accounts");
+            data.put(MODULE_NAME, module_name);
 
             try {
                 JSONArray nameValueArray = new JSONArray();
