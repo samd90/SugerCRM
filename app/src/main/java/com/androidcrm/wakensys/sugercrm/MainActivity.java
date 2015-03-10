@@ -54,32 +54,20 @@ import java.util.List;
 import com.androidcrm.wakensys.sugercrm.AdapterClass.MenuListAdapter;
 import com.androidcrm.wakensys.sugercrm.AddNewEntry.AddNewItem_SelectMenu;
 import com.androidcrm.wakensys.sugercrm.data_sync.CrmDatabaseAdapter;
+import com.androidcrm.wakensys.sugercrm.fragment.CalendarView;
 import com.androidcrm.wakensys.sugercrm.fragment.Fragment_Entries;
 import com.androidcrm.wakensys.sugercrm.fragment.Fragment_home;
 
 public class MainActivity extends ActionBarActivity {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
     public static List<String> moduleNames;
     public static String module_name;
     private static HttpClient httpClient = new DefaultHttpClient();
-
-    private static final String TAG = MainActivity.class.getSimpleName();
-
-    private ProgressDialog dialog;
-
-    private CharSequence mDrawerTitle;
-    private CharSequence mTitle;
-    private String[] mDrawerItmes;
-    private List<String> module_labels = new ArrayList<String>();
-    private int[] photo = null;
-
     DrawerLayout mDrawerLayout;
     ListView mDrawerList;
     ActionBarDrawerToggle mDrawerToggle;
     String[] mDrawerListItems;
-
-    private String menuItem;
-
     String sessionId = null;
     String restUrl = null;
     String response = null;
@@ -88,7 +76,13 @@ public class MainActivity extends ActionBarActivity {
     List<String> cannotViewModules = new ArrayList<String>();
     List<String> moduleKeyList = new ArrayList<String>();
     CrmDatabaseAdapter databaseAdapter;
-
+    private ProgressDialog dialog;
+    private CharSequence mDrawerTitle;
+    private CharSequence mTitle;
+    private String[] mDrawerItmes;
+    private List<String> module_labels = new ArrayList<String>();
+    private int[] photo = null;
+    private String menuItem;
     private boolean canViewModules = false;
 
     @Override
@@ -140,7 +134,7 @@ public class MainActivity extends ActionBarActivity {
 
         // Set Default Layout to App
         if (savedInstanceState == null) {
-            Fragment_home fragment_home = new Fragment_home();
+            CalendarView fragment_home = new CalendarView();
             Bundle fb = new Bundle();
             fb.putString("sessionId", sessionId);
             fragment_home.setArguments(fb);
@@ -148,6 +142,7 @@ public class MainActivity extends ActionBarActivity {
                     .beginTransaction()
                     .replace(R.id.content_frame, fragment_home,
                             TAG).commit();
+
             mDrawerLayout.closeDrawers();
         }
 
@@ -162,6 +157,77 @@ public class MainActivity extends ActionBarActivity {
                 R.drawable.ic_launcher,};
         moduleNames = new ArrayList<String>();
 
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+
+        } else {
+            super.onBackPressed();
+        }
+
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: {
+                if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
+                    mDrawerLayout.closeDrawer(mDrawerList);
+                } else {
+                    mDrawerLayout.openDrawer(mDrawerList);
+                }
+                return true;
+            }
+
+            case R.id.action_settings: {
+                Toast.makeText(getApplicationContext(), "Option Item clicked", Toast.LENGTH_LONG).show();
+                return true;
+            }
+
+            case R.id.action_addNewAccount: {
+                //Put session id and resturl into bundle
+                Bundle b = new Bundle();
+                b.putString("sessionId", sessionId);
+                b.putString("restUrl", restUrl);
+                //Start AddNewItem class
+                AddNewItem_SelectMenu fragment = new AddNewItem_SelectMenu();
+                fragment.setArguments(b);
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, TAG).commit();
+                return true;
+            }
+
+            case R.id.action_logout: {
+                //Execute logout class
+                new LogoutUser().execute(sessionId, restUrl);
+                return true;
+            }
+
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     class LoadingMenuModules extends AsyncTask<String, Void, Boolean> {
@@ -310,16 +376,15 @@ public class MainActivity extends ActionBarActivity {
 
                             } else if (action.equals("view")) {
 
-                                if (value == false){
+                                if (value == false) {
                                     action_view = 0;
-                                   // cannotViewModules.add(module_key);
-                                   // canViewModules = false;
-                                }
-                                else if (value == true) {
+                                    // cannotViewModules.add(module_key);
+                                    // canViewModules = false;
+                                } else if (value == true) {
                                     //Add module name only User Access True
                                     moduleName.add(module_label);
                                     moduleKeyList.add(module_key);
-                                  // canViewModules = true;
+                                    // canViewModules = true;
                                     action_view = 1;
                                 }
 
@@ -364,9 +429,9 @@ public class MainActivity extends ActionBarActivity {
 
                 int i = 0;
 
-                String[] moduleLabel = new String[(csr.getCount()-1)];
-                String[] actionView = new String[(csr.getCount()-1)];
-                String[] moduleKey = new String[(csr.getCount()-1)];
+                String[] moduleLabel = new String[(csr.getCount() - 1)];
+                String[] actionView = new String[(csr.getCount() - 1)];
+                String[] moduleKey = new String[(csr.getCount() - 1)];
 
                 csr.moveToFirst();
 
@@ -378,12 +443,12 @@ public class MainActivity extends ActionBarActivity {
                     i++;
                 }
 
-                for(int j = 0 ; j < actionView.length ; j++){
+                for (int j = 0; j < actionView.length; j++) {
 
                     String accessView = actionView[j];
 
-                    if (accessView.equals("1")){
-                        Log.d("LOG",accessView +" "+ moduleLabel[j]);
+                    if (accessView.equals("1")) {
+                        Log.d("LOG", accessView + " " + moduleLabel[j]);
                         moduleKeyList.add(moduleKey[j]);
                         moduleName.add(moduleLabel[j]);
                     }
@@ -400,22 +465,22 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
-          //  if (canViewModules == true) {
-                Bundle b = new Bundle();
-                //get moduleName for display entries list
-                String moduleNames = moduleKeyList.get(position);
-                b.putString("restUrl", restUrl);
-                b.putString("sessionId", sessionId);
-                b.putString("module_name", moduleNames);
+            //  if (canViewModules == true) {
+            Bundle b = new Bundle();
+            //get moduleName for display entries list
+            String moduleNames = moduleKeyList.get(position);
+            b.putString("restUrl", restUrl);
+            b.putString("sessionId", sessionId);
+            b.putString("module_name", moduleNames);
 
-                Log.d(TAG + " restUrl", restUrl);
-                Log.d(TAG + " sessionId", sessionId);
-                Log.d(TAG + " module_name", moduleNames);
+            Log.d(TAG + " restUrl", restUrl);
+            Log.d(TAG + " sessionId", sessionId);
+            Log.d(TAG + " module_name", moduleNames);
 
-                Fragment_Entries fragment = new Fragment_Entries();
+            Fragment_Entries fragment = new Fragment_Entries();
                 fragment.setArguments(b);
-                getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, TAG).commit();
-                mDrawerLayout.closeDrawers();
+            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, TAG).commit();
+            mDrawerLayout.closeDrawers();
          /*   }else {
                 new AlertDialog.Builder(MainActivity.this)
                         .setTitle("Alert")
@@ -427,7 +492,9 @@ public class MainActivity extends ActionBarActivity {
                         }).setIcon(android.R.drawable.ic_dialog_alert).show();
                 }
             }
-*/}
+*/
+        }
+
         private void logout() {
 
             Log.d("click", "logout");
@@ -463,79 +530,6 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-
-
-
-    @Override
-    public void onBackPressed() {
-
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            getSupportFragmentManager().popBackStack();
-
-        } else {
-            super.onBackPressed();
-        }
-
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        mDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home: {
-                if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
-                    mDrawerLayout.closeDrawer(mDrawerList);
-                } else {
-                    mDrawerLayout.openDrawer(mDrawerList);
-                }
-                return true;
-            }
-
-            case R.id.action_settings:{
-                Toast.makeText(getApplicationContext(), "Option Item clicked", Toast.LENGTH_LONG).show();
-                return true;
-            }
-
-            case R.id.action_addNewAccount:{
-                //Put session id and resturl into bundle
-                Bundle b = new Bundle();
-                b.putString("sessionId",sessionId);
-                b.putString("restUrl",restUrl);
-                //Start AddNewItem class
-                AddNewItem_SelectMenu fragment = new AddNewItem_SelectMenu();
-                fragment.setArguments(b);
-                getSupportFragmentManager().beginTransaction().replace(R.id.content_frame,fragment,TAG).commit();
-                return true;
-            }
-
-            case R.id.action_logout:{
-                //Execute logout class
-                new LogoutUser().execute(sessionId, restUrl);
-                return true;
-            }
-
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
     class LogoutUser extends AsyncTask<String, Void, Boolean> {
 
         boolean failure = false;

@@ -71,28 +71,26 @@ import android.widget.Toast;
 public class Fragment_Entries extends Fragment implements
         OnItemClickListener, OnEditorActionListener {
 
-    private ProgressDialog dialog;
-    private EditText search;
+    public final static String TAG = Fragment_Entries.class
+            .getSimpleName();
     public static List<String> entry_names;
     public static List<String> entry_ids;
     public static List<String> entry_cnt_names;
     public static String account_name;
+    public static List<String> display_entry;
+    private ProgressDialog dialog;
+    private EditText search;
     private String query, orderBy, offset, maxResults, deleted, acc_name, entry_id;
     private String[] selectFields;
     private Map<String, List<String>> linkNameToFieldsArray;
     private String module_name;
-    public static List<String> display_entry;
     // Button btnFav;
     private ListView mEntryList;
     private List<String> entry_co;
     private String sessionId = null;
     private String restUrl = null;
     private String module_label = null;
-
     private CrmDatabaseAdapter databseAdapter;
-
-    public final static String TAG = Fragment_Entries.class
-            .getSimpleName();
 
     public static Fragment_Entries newInstance() {
         return new Fragment_Entries();
@@ -166,6 +164,50 @@ public class Fragment_Entries extends Fragment implements
             e.printStackTrace();
         }
         return rootView;
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+
+        if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+
+            new performSearch().execute(search.getText().toString(), restUrl, sessionId);
+            Log.d("Clicked", "Search button clicked");
+
+            return true;
+        }
+
+        return false;
+    }
+
+    //Go to individual entry details on Drawer item click
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position,
+                            long ids) {
+        try {
+            Log.v("TAG", "Drawer Item clicked");
+            account_name = entry_names.get(position);
+            entry_id = entry_ids.get(position);
+            EntriesDetailsController fragment = new EntriesDetailsController();
+            //Put EntryId, module label into bundle
+            Bundle b = new Bundle();
+            b.putString("sessionId", sessionId);
+            b.putString("module_label", module_name);
+            b.putString("entry_id", entry_id);
+            b.putString("restUrl", restUrl);
+
+          /*  Log.d(TAG + " sessionId", sessionId);
+            Log.d(TAG + " module name" , module_name);
+            Log.d(TAG + " entry_id", entry_id);
+            Log.d(TAG + " restUrl" , restUrl);
+*/
+            //Set bundle into fragment
+            fragment.setArguments(b);
+            getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, TAG).addToBackStack(TAG).commit();
+            Log.d("Entry name", account_name + " click");
+        } catch (Exception e) {
+            Log.e("Error", e.toString());
+        }
     }
 
     class LoadingModuleLayout extends AsyncTask<String, Void, Boolean> {
@@ -249,7 +291,7 @@ public class Fragment_Entries extends Fragment implements
 
                 Log.e(TAG + " nameValuePairs", nameValuePairs.toString());
 
-                Log.e(TAG + "response is " , response);
+                Log.e(TAG + "response is ", response);
 
             } catch (JSONException jo) {
                 successful = true;
@@ -753,7 +795,7 @@ public class Fragment_Entries extends Fragment implements
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }else if (module_name.equals("ProspectLists")) {
+                } else if (module_name.equals("ProspectLists")) {
                     try {
                         JSONObject responseJObj = new JSONObject(response);
                         JSONArray jArray = responseJObj.getJSONArray(ENTRY_LIST);
@@ -778,7 +820,7 @@ public class Fragment_Entries extends Fragment implements
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }else if (module_name.equals("Prospects")) {
+                } else if (module_name.equals("Prospects")) {
                     try {
                         JSONObject responseJObj = new JSONObject(response);
                         JSONArray jArray = responseJObj.getJSONArray(ENTRY_LIST);
@@ -803,7 +845,7 @@ public class Fragment_Entries extends Fragment implements
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }else if (module_name.equals("Tasks")) {
+                } else if (module_name.equals("Tasks")) {
                     try {
                         JSONObject responseJObj = new JSONObject(response);
                         JSONArray jArray = responseJObj.getJSONArray(ENTRY_LIST);
@@ -828,7 +870,7 @@ public class Fragment_Entries extends Fragment implements
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }else if (module_name.equals("Bugs")) {
+                } else if (module_name.equals("Bugs")) {
                     try {
                         JSONObject responseJObj = new JSONObject(response);
                         JSONArray jArray = responseJObj.getJSONArray(ENTRY_LIST);
@@ -853,7 +895,7 @@ public class Fragment_Entries extends Fragment implements
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }else if (module_name.equals("Bugs")) {
+                } else if (module_name.equals("Bugs")) {
                     try {
                         JSONObject responseJObj = new JSONObject(response);
                         JSONArray jArray = responseJObj.getJSONArray(ENTRY_LIST);
@@ -878,7 +920,32 @@ public class Fragment_Entries extends Fragment implements
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }else if (module_name.equals("Project")) {
+                } else if (module_name.equals("Project")) {
+                    try {
+                        JSONObject responseJObj = new JSONObject(response);
+                        JSONArray jArray = responseJObj.getJSONArray(ENTRY_LIST);
+
+                        for (int i = 0; i < jArray.length(); i++) {
+
+                            JSONObject obj = jArray.getJSONObject(i);
+                            String id = obj.getString("id");
+
+                            entry_ids.add(id);
+
+                        /*    long opportunity_id = databseAdapter.InsertOpportunitiesTable(id, acc_name, account_name, amount, amount_usdollar, assigned_user_id, assigned_user_name, campaign_name,created_by, created_by_name,
+                                    currency_id, currency_name, currency_symbol, date_closed,date_entered, date_modified, description, lead_source, modified_by_name, modified_user_id,
+                                    next_step, opportunity_type, probability, sales_stage, deleted);
+                            if (opportunity_id > 0) {
+                                Log.d(TAG + " InsertOpportunitiesTable", "Successful");
+                            } else {
+                                Log.d(TAG + " InsertOpportunitiesTable", "Error");
+                            }*/
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else if (module_name.equals("Calender")) {
                     try {
                         JSONObject responseJObj = new JSONObject(response);
                         JSONArray jArray = responseJObj.getJSONArray(ENTRY_LIST);
@@ -904,6 +971,7 @@ public class Fragment_Entries extends Fragment implements
                         e.printStackTrace();
                     }
                 }
+
 
             }// ----------------------------------------------- didnt add target,targetlist,bug,projects,campaigns,task to sqlite
             else {
@@ -1062,20 +1130,6 @@ public class Fragment_Entries extends Fragment implements
         }
     }
 
-    @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-
-        if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-
-            new performSearch().execute(search.getText().toString(), restUrl, sessionId);
-            Log.d("Clicked", "Search button clicked");
-
-            return true;
-        }
-
-        return false;
-    }
-
     class performSearch extends AsyncTask<String, Void, Boolean> {
         JSONObject jsonObj;
         private String searchString = null;
@@ -1228,36 +1282,6 @@ public class Fragment_Entries extends Fragment implements
 
             }
 
-        }
-    }
-
-    //Go to individual entry details on Drawer item click
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position,
-                            long ids) {
-        try {
-            Log.v("TAG", "Drawer Item clicked");
-            account_name = entry_names.get(position);
-            entry_id = entry_ids.get(position);
-            EntriesDetailsController fragment = new EntriesDetailsController();
-            //Put EntryId, module label into bundle
-            Bundle b = new Bundle();
-            b.putString("sessionId", sessionId);
-            b.putString("module_label", module_name);
-            b.putString("entry_id", entry_id);
-            b.putString("restUrl", restUrl);
-
-          /*  Log.d(TAG + " sessionId", sessionId);
-            Log.d(TAG + " module name" , module_name);
-            Log.d(TAG + " entry_id", entry_id);
-            Log.d(TAG + " restUrl" , restUrl);
-*/
-            //Set bundle into fragment
-            fragment.setArguments(b);
-            getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, TAG).addToBackStack(TAG).commit();
-            Log.d("Entry name", account_name + " click");
-        } catch (Exception e) {
-            Log.e("Error", e.toString());
         }
     }
 
