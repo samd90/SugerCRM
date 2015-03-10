@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/frg_acc"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/lnr2"
+            android:background="#454545"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:orientation="vertical"
+            android:weightSum="1">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="171dp"
+                android:orientation="horizontal"
+
+                android:layout_weight="1.23">
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="171dp"
+                        android:orientation="vertical"
+                        android:id="@+id/ln1"
+                        >
+
+                        <TextView
+                            android:id="@+id/txt_detail_1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:paddingBottom="8dp"
+                            android:paddingLeft="16dp"
+                            android:paddingTop="16dp"
+                            android:text="(Not Available)"
+                            android:textColor="#ffffff"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:id="@+id/txt_detail_2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_below="@+id/txt_web"
+                            android:text="(Not Available)"
+                            android:paddingBottom="8dp"
+                            android:paddingLeft="16dp"
+                            android:textColor="#ffffff"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/txt_detail_3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignTop="@+id/btn_more"
+                            android:paddingBottom="8dp"
+                            android:paddingLeft="16dp"
+                            android:text="(Not Available)"
+                            android:textColor="#ffffff"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/txt_detail_4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignTop="@+id/btn_more"
+                            android:paddingBottom="8dp"
+                            android:paddingLeft="16dp"
+                            android:text="(Not Available)"
+                            android:textColor="#ffffff"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/txt_detail_5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignTop="@+id/btn_more"
+                            android:paddingBottom="8dp"
+                            android:paddingLeft="16dp"
+                            android:text="(Not Available)"
+                            android:textColor="#ffffff"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btn_more"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.5"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:padding="16dp"
+                        android:text="More.."
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:layout_gravity="bottom" />
+                </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0.0dp"
+            android:layout_below="@+id/lnr2"
+            android:layout_weight="0.01"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/linearLayout1"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_below="@+id/lnr2"
+                android:background="@drawable/app_btn_bg"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_call"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="0.0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.15"
+                    android:background="@drawable/btn_call" />
+
+                <Button
+                    android:id="@+id/btn_email"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="0.0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.15"
+                    android:background="@drawable/btn_email" />
+
+                <Button
+                    android:id="@+id/btn_text"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="0.0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.15"
+                    android:background="@drawable/btn_sms" />
+
+                <Button
+                    android:id="@+id/btn_loc"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="0.0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.15"
+                    android:background="@drawable/btn_place" />
+
+                <Button
+                    android:id="@+id/btn_edit"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="0.0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.15"
+                    android:background="@drawable/btn_file" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout7"
+            android:layout_width="wrap_content"
+            android:layout_height="0.0dp"
+            android:layout_below="@+id/linearLayout1"
+            android:layout_weight="1.5"
+            android:orientation="vertical">
+
+            <ListView
+                android:id="@+id/lv_info_acc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@null"
+                android:dividerHeight="0dp"
+                android:textColor="#ffffff"></ListView>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

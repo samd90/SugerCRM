@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#454545">
+
+
+    <LinearLayout
+        android:layout_below="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/addNewAccount"
+            android:layout_width="300dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            >
+
+            <ImageView
+                android:layout_marginLeft="15dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:background="@drawable/plus"/>
+            <TextView
+                android:layout_gravity="center"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textSize="20sp"
+                android:layout_height="wrap_content"
+                android:text="Add New Account"
+                android:textColor="@color/textColor"
+                android:gravity="center_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/addNewCall"
+            android:layout_width="300dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            >
+            <ImageView
+                android:layout_marginLeft="15dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:background="@drawable/plus"/>
+            <TextView
+                android:layout_gravity="center"
+                android:layout_width="0dp"
+                android:textSize="20sp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Add New Call"
+                android:textColor="@color/textColor"
+                android:gravity="center_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/addNewCase"
+            android:layout_width="300dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            >
+            <ImageView
+                android:layout_marginLeft="15dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:background="@drawable/plus"/>
+            <TextView
+                android:layout_gravity="center"
+                android:layout_width="0dp"
+                android:textSize="20sp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Add New Case"
+                android:textColor="@color/textColor"
+                android:gravity="center_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/addNewContact"
+            android:layout_width="300dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            >
+            <ImageView
+                android:layout_marginLeft="15dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:background="@drawable/plus"/>
+            <TextView
+                android:layout_gravity="center"
+                android:layout_width="0dp"
+                android:textSize="20sp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Add New Contact"
+                android:textColor="@color/textColor"
+                android:gravity="center_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/addNewLead"
+            android:layout_width="300dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            >
+            <ImageView
+                android:layout_marginLeft="15dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:background="@drawable/plus"/>
+            <TextView
+                android:layout_gravity="center"
+                android:layout_width="0dp"
+                android:textSize="20sp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Add New Lead"
+                android:textColor="@color/textColor"
+                android:gravity="center_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/addNewMeeting"
+            android:layout_width="300dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            >
+            <ImageView
+                android:layout_marginLeft="15dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:background="@drawable/plus"/>
+            <TextView
+                android:layout_gravity="center"
+                android:layout_width="0dp"
+                android:textSize="20sp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Add New Meeting"
+                android:textColor="@color/textColor"
+                android:gravity="center_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/addNewOpportunity"
+            android:layout_width="300dp"
+
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            >
+            <ImageView
+                android:layout_marginLeft="15dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:background="@drawable/plus"/>
+            <TextView
+                android:layout_gravity="center"
+                android:layout_width="0dp"
+                android:textSize="20sp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Add New Opportunity"
+                android:textColor="@color/textColor"
+                android:gravity="center_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/addNewCampaign"
+        android:layout_width="300dp"
+
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        >
+        <ImageView
+            android:layout_marginLeft="15dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:background="@drawable/plus"/>
+        <TextView
+            android:layout_gravity="center"
+            android:layout_width="0dp"
+            android:textSize="20sp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Add New Campaign"
+            android:textColor="@color/textColor"
+            android:gravity="center_horizontal" />
+    </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/addNewNote"
+            android:layout_width="300dp"
+
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            >
+            <ImageView
+                android:layout_marginLeft="15dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:background="@drawable/plus"/>
+            <TextView
+                android:layout_gravity="center"
+                android:layout_width="0dp"
+                android:textSize="20sp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Add New Note"
+                android:textColor="@color/textColor"
+                android:gravity="center_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/addNewTarget"
+            android:layout_width="300dp"
+
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            >
+            <ImageView
+                android:layout_marginLeft="15dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:background="@drawable/plus"/>
+            <TextView
+                android:layout_gravity="center"
+                android:layout_width="0dp"
+                android:textSize="20sp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Add New Target"
+                android:textColor="@color/textColor"
+                android:gravity="center_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/addNewTargetList"
+            android:layout_width="300dp"
+
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            >
+            <ImageView
+                android:layout_marginLeft="15dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:background="@drawable/plus"/>
+            <TextView
+                android:layout_gravity="center"
+                android:layout_width="0dp"
+                android:textSize="20sp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Add New Target List"
+                android:textColor="@color/textColor"
+                android:gravity="center_horizontal" />
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

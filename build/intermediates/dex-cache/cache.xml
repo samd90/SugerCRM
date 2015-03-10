@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\Wakensys\Google Drive\SugerCRM\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\libs\internal_impl-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="01ec05bfbafcc07646ba813000bf2ef11742dd03">
+        <dex dex="C:\Users\Wakensys\Google Drive\SugerCRM\app\build\intermediates\pre-dexed\debug\internal_impl-21.0.3-8d261ab09f441ed8b58dd9f391e9d3c81d05b76a.jar" />
+    </item>
+    <item
+        jar="C:\Users\Wakensys\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\21.0.3\support-annotations-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="4b74cefe1f0c1b819e7260c8627a14674e37fd35">
+        <dex dex="C:\Users\Wakensys\Google Drive\SugerCRM\app\build\intermediates\pre-dexed\debug\support-annotations-21.0.3-592f3618658b3603c4d7354e31afeeea8109f918.jar" />
+    </item>
+    <item
+        jar="C:\Users\Wakensys\Google Drive\SugerCRM\app\libs\json_simple-1.1.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="5e303a03d04e6788dddfa3655272580ae0fc13bb">
+        <dex dex="C:\Users\Wakensys\Google Drive\SugerCRM\app\build\intermediates\pre-dexed\debug\json_simple-1.1-d131ebf5d9a135f970462de8aefa6856fdd8b2f6.jar" />
+    </item>
+    <item
+        jar="C:\Users\Wakensys\Google Drive\SugerCRM\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\21.0.3\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
+        <dex dex="C:\Users\Wakensys\Google Drive\SugerCRM\app\build\intermediates\pre-dexed\debug\classes-4a3385f7721f80f0df8b9005bf5c6cf55036ed4b.jar" />
+    </item>
+    <item
+        jar="C:\Users\Wakensys\Google Drive\SugerCRM\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="2c91c949a45a21cdecf26e03951e46c7beec9ad8">
+        <dex dex="C:\Users\Wakensys\Google Drive\SugerCRM\app\build\intermediates\pre-dexed\debug\classes-1fada4ab19fedf9d2df634f41ab206ca482db16d.jar" />
+    </item>
+
+</items>
