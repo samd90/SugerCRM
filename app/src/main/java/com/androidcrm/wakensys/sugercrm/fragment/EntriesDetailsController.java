@@ -152,7 +152,7 @@ public class EntriesDetailsController extends Fragment implements
             sessionId = b.getString("sessionId");
             entry_id = b.getString("entry_id");
             restUrl = b.getString("restUrl");
-            module_label = b.getString("module_label");
+            module_label = b.getString("module_name");
 
             //Set onItem click listner to Relationship List
             acc_info_list.setOnItemClickListener(this);
@@ -1318,6 +1318,28 @@ public class EntriesDetailsController extends Fragment implements
                             }
                             break;
                         default:
+                            try {
+                                for (int i = 0; i < jArray.length(); i++) {
+
+                                    JSONObject obj = jArray.getJSONObject(i);
+                                    id = obj.getString("id");
+
+                                    name_value_list = obj.getJSONObject("name_value_list");
+
+                                    JSONObject name_ = name_value_list.getJSONObject("name");
+                                    name = name_.getString("value");
+
+                                    JSONObject description_ = name_value_list.getJSONObject("description");
+                                    description = description_.getString("value");
+
+                                    //Set TextView to values
+                                    detail_1.setText(name);
+                                    detail_2.setText(description);
+
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                             break;
                     }
 

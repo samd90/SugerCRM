@@ -162,13 +162,9 @@ public class CalendarView extends Fragment {
                         rLayout.addView(rowTextView);
 
                     }
-
                 }
-
                 desc = null;
-
             }
-
         });
         return rootView;
     }
@@ -182,7 +178,6 @@ public class CalendarView extends Fragment {
             month.set(GregorianCalendar.MONTH,
                     month.get(GregorianCalendar.MONTH) + 1);
         }
-
     }
 
     protected void setPreviousMonth() {
