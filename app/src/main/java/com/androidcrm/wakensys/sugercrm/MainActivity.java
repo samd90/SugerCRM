@@ -49,11 +49,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.androidcrm.wakensys.sugercrm.AdapterClass.DrawerListAdapter;
 import com.androidcrm.wakensys.sugercrm.AdapterClass.MenuListAdapter;
 import com.androidcrm.wakensys.sugercrm.AddNewEntry.AddNewItem_SelectMenu;
 import com.androidcrm.wakensys.sugercrm.data_sync.CrmDatabaseAdapter;
-import com.androidcrm.wakensys.sugercrm.fragment.Calendar_layout;
+import com.androidcrm.wakensys.sugercrm.fragment.Fragment_Calendar;
 import com.androidcrm.wakensys.sugercrm.fragment.Fragment_Entries;
+import com.androidcrm.wakensys.sugercrm.fragment.Fragment_home;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -69,7 +71,7 @@ public class MainActivity extends ActionBarActivity {
     String restUrl = null;
     String response = null;
     String moduleLabel = null;
-    List<String> moduleName = new ArrayList<String>();
+    ArrayList<String> moduleName = new ArrayList<String>();
     List<String> cannotViewModules = new ArrayList<String>();
     List<String> moduleKeyList = new ArrayList<String>();
     CrmDatabaseAdapter databaseAdapter;
@@ -81,11 +83,14 @@ public class MainActivity extends ActionBarActivity {
     private int[] photo = null;
     private String menuItem;
     private boolean canViewModules = false;
-
+    private String module_name_value;
+    private String module_key_value;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+
+        module_name_value = getTitle().toString();
 
         databaseAdapter = new CrmDatabaseAdapter(this);
 
@@ -110,17 +115,19 @@ public class MainActivity extends ActionBarActivity {
                 toolbar,
                 R.string.drawer_open,
                 R.string.drawer_close) {
-
             public void onDrawerClosed(View v) {
-                super.onDrawerClosed(v);
+                getSupportActionBar().setTitle(module_name_value);
                 invalidateOptionsMenu();
                 syncState();
+
             }
 
             public void onDrawerOpened(View v) {
                 super.onDrawerOpened(v);
+                getSupportActionBar().setTitle(module_name_value);
                 invalidateOptionsMenu();
                 syncState();
+
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
@@ -131,7 +138,7 @@ public class MainActivity extends ActionBarActivity {
 
         // Set Default Layout to App
         if (savedInstanceState == null) {
-            Calendar_layout fragment_home = new Calendar_layout();
+            Fragment_home fragment_home = new Fragment_home();
             Bundle fb = new Bundle();
             fb.putString("sessionId", sessionId);
             fragment_home.setArguments(fb);
@@ -143,6 +150,7 @@ public class MainActivity extends ActionBarActivity {
             mDrawerLayout.closeDrawers();
         }
 
+
         // Array for Drawer Listview photos
         photo = new int[]{R.drawable.btn_home, R.drawable.ic_launcher,
                 R.drawable.btn_ac, R.drawable.btn_co, R.drawable.btn_op,
@@ -153,6 +161,24 @@ public class MainActivity extends ActionBarActivity {
                 R.drawable.ic_launcher, R.drawable.ic_launcher,
                 R.drawable.ic_launcher,};
         moduleNames = new ArrayList<String>();
+
+    }
+
+    /**
+     * Called when invalidateOptionsMenu() is triggered
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // if nav drawer is opened, hide the action items
+        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        mTitle = title;
+        getSupportActionBar().setTitle(module_name_value);
 
     }
 
@@ -188,12 +214,20 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        // toggle nav drawer on selecting action bar app icon/title
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
         switch (item.getItemId()) {
+
             case android.R.id.home: {
                 if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
                     mDrawerLayout.closeDrawer(mDrawerList);
                 } else {
                     mDrawerLayout.openDrawer(mDrawerList);
+
                 }
                 return true;
             }
@@ -405,10 +439,11 @@ public class MainActivity extends ActionBarActivity {
                         long id = databaseAdapter.InsertAvailableModules(module_key, module_label, favorite_enabled, action_edit, action_delete, action_list, action_view, action_import, action_export);
                     }
 
+
                     MenuListAdapter menuAdapter = new MenuListAdapter(
                             getApplicationContext(), moduleName, photo);
                     mDrawerList.setAdapter(menuAdapter);
-
+                    mDrawerList.setAdapter(menuAdapter);
                 } catch (JSONException e) {
 
                     e.printStackTrace();
@@ -462,34 +497,46 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
+
             //  if (canViewModules == true) {
             Bundle b = new Bundle();
             //get moduleName for display entries list
-            String moduleNames = moduleKeyList.get(position);
+            module_key_value = moduleKeyList.get(position);
+            module_name_value = moduleName.get(position);
             b.putString("restUrl", restUrl);
             b.putString("sessionId", sessionId);
-            b.putString("module_name", moduleNames);
+            b.putString("module_name", module_key_value);
 
             Log.d(TAG + " restUrl", restUrl);
             Log.d(TAG + " sessionId", sessionId);
-            Log.d(TAG + " module_name", moduleNames);
+            Log.d(TAG + " module_name", module_key_value);
 
-            Fragment_Entries fragment = new Fragment_Entries();
-            fragment.setArguments(b);
-            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, TAG).commit();
-            mDrawerLayout.closeDrawers();
-         /*   }else {
-                new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("Alert")
-                        .setMessage("Record Successfully Added.")
-                        .setNegativeButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
+            switch (module_key_value) {
+                case "Home":
+                    Fragment_home fragment1 = new Fragment_home();
+                    fragment1.setArguments(b);
+                    getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment1, TAG).commit();
+                    mDrawerLayout.closeDrawers();
 
-                           }
-                        }).setIcon(android.R.drawable.ic_dialog_alert).show();
-                }
+                    break;
+                case "Calendar":
+                    Fragment_Calendar fragment2 = new Fragment_Calendar();
+                    fragment2.setArguments(b);
+                    getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment2, TAG).commit();
+                    mDrawerLayout.closeDrawers();
+
+                    break;
+                default:
+                    Fragment_Entries fragment = new Fragment_Entries();
+                    fragment.setArguments(b);
+                    getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, TAG).commit();
+
+                    getSupportActionBar().setTitle(module_name_value);
+                    mDrawerLayout.closeDrawers();
+
+                    break;
             }
-*/
+
         }
 
         private void logout() {

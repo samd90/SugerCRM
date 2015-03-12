@@ -14,7 +14,7 @@ import com.androidcrm.wakensys.sugercrm.R;
 /**
  * Created by Wakensys on 3/10/2015.
  */
-public class Calendar_layout extends Fragment {
+public class Fragment_Calendar extends Fragment {
 
     CalendarView calendar;
 
