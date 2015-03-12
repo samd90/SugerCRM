@@ -13,7 +13,6 @@ import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.GE
 
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,7 +28,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -54,9 +52,8 @@ import java.util.List;
 import com.androidcrm.wakensys.sugercrm.AdapterClass.MenuListAdapter;
 import com.androidcrm.wakensys.sugercrm.AddNewEntry.AddNewItem_SelectMenu;
 import com.androidcrm.wakensys.sugercrm.data_sync.CrmDatabaseAdapter;
-import com.androidcrm.wakensys.sugercrm.fragment.CalendarView;
+import com.androidcrm.wakensys.sugercrm.fragment.Calendar_layout;
 import com.androidcrm.wakensys.sugercrm.fragment.Fragment_Entries;
-import com.androidcrm.wakensys.sugercrm.fragment.Fragment_home;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -134,7 +131,7 @@ public class MainActivity extends ActionBarActivity {
 
         // Set Default Layout to App
         if (savedInstanceState == null) {
-            CalendarView fragment_home = new CalendarView();
+            Calendar_layout fragment_home = new Calendar_layout();
             Bundle fb = new Bundle();
             fb.putString("sessionId", sessionId);
             fragment_home.setArguments(fb);
@@ -478,7 +475,7 @@ public class MainActivity extends ActionBarActivity {
             Log.d(TAG + " module_name", moduleNames);
 
             Fragment_Entries fragment = new Fragment_Entries();
-                fragment.setArguments(b);
+            fragment.setArguments(b);
             getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, TAG).commit();
             mDrawerLayout.closeDrawers();
          /*   }else {

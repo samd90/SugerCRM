@@ -567,7 +567,6 @@ public class EntriesDetailsController extends Fragment implements
                     relatedModuleQuery = "";
                     new getRelationship(linkFieldName, relatedModuleQuery, entry_id).execute();
 
-
                     break;
                 case 1:
                     Log.d("Item click", "" + "ListView " + position + " click");
@@ -624,7 +623,6 @@ public class EntriesDetailsController extends Fragment implements
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     //Getting AccountEntry Details
