@@ -1004,7 +1004,7 @@ public class EntriesDetailsController extends Fragment implements
                                     date_start = date_start_.getString("value");
 
                                     JSONObject status_ = name_value_list
-                                            .getJSONObject("date_start");
+                                            .getJSONObject("status");
                                     status = status_.getString("value");
 
                                     //Set TextView to values

@@ -47,7 +47,6 @@ import com.androidcrm.wakensys.sugercrm.R;
 import com.androidcrm.wakensys.sugercrm.AdapterClass.EntriesListAdapter;
 import com.androidcrm.wakensys.sugercrm.data_sync.CrmDatabaseAdapter;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -199,11 +198,12 @@ public class Fragment_Entries extends Fragment implements
             b.putString("entry_id", entry_id);
             b.putString("restUrl", restUrl);
 
-          /*  Log.d(TAG + " sessionId", sessionId);
+          /*
+            Log.d(TAG + " sessionId", sessionId);
             Log.d(TAG + " module name" , module_name);
             Log.d(TAG + " entry_id", entry_id);
             Log.d(TAG + " restUrl" , restUrl);
-*/
+            */
             //Set bundle into fragment
             fragment.setArguments(b);
             getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, TAG).addToBackStack(TAG).commit();
@@ -507,8 +507,8 @@ public class Fragment_Entries extends Fragment implements
         private String sessionId = null;
         private String restUrl = null;
         private String offset = null;
-        private String[] module1 = {module_label};
         private String maxResults = null;
+        private String[] module1 = {module_label};
         private Boolean favorites = false;
         private String response = null;
         private String errorMessage = null;
@@ -654,6 +654,8 @@ public class Fragment_Entries extends Fragment implements
             }
 
         }
+
+
 
 
     }
