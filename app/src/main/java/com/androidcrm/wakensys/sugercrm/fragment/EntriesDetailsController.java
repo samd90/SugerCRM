@@ -46,7 +46,6 @@ import com.androidcrm.wakensys.sugercrm.R;
 import com.androidcrm.wakensys.sugercrm.AdapterClass.EntryListAdapter;
 import com.androidcrm.wakensys.sugercrm.data_sync.CrmDatabaseAdapter;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
@@ -58,14 +57,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -164,390 +161,6 @@ public class EntriesDetailsController extends Fragment implements
         new EntryDetails().execute(entry_id, module_label, restUrl, sessionId);
         return rootView;
 
-    }
-
-    @Override
-    public void onClick(View v) {
-        try {
-            boolean fromEdit = true;
-            switch (v.getId()) {
-                case R.id.btn_more:
-                    try {
-                        switch (module_label) {
-                            case "Accounts":
-                                Bundle bundle = new Bundle();
-                                String accountDetails = name_value_list.toString();
-                                bundle.putBoolean("from_edit", fromEdit);
-                                bundle.putString("sessionId", sessionId);
-                                bundle.putString("module_name", module_label);
-                                bundle.putString("accountDetails", accountDetails);
-                                Intent ih = new Intent(getActivity(), EntryDetails_accounts.class);
-                                ih.putExtras(bundle);
-                                startActivity(ih);
-
-                                break;
-                            case "Contacts":
-                                Bundle bundle1 = new Bundle();
-                                String contactDetails = name_value_list.toString();
-                                bundle1.putBoolean("from_edit", fromEdit);
-                                bundle1.putString("sessionId", sessionId);
-                                bundle1.putString("module_name", module_label);
-                                bundle1.putString("contactDetails", contactDetails);
-                                Intent ij = new Intent(getActivity(), EntryDetails_contacts.class);
-                                ij.putExtras(bundle1);
-                                startActivity(ij);
-
-                                break;
-                            case "Calls":
-                                Bundle bundle2 = new Bundle();
-                                String callDetails = name_value_list.toString();
-                                bundle2.putString("callDetails", callDetails);
-                                bundle2.putBoolean("from_edit", fromEdit);
-                                bundle2.putString("module_name", module_label);
-                                bundle2.putString("sessionId", sessionId);
-                                Intent iq = new Intent(getActivity(), EntryDetails_calls.class);
-                                iq.putExtras(bundle2);
-                                startActivity(iq);
-
-                                break;
-                            case "Leads":
-                                Bundle bundle3 = new Bundle();
-                                String leadsDetails = name_value_list.toString();
-                                bundle3.putBoolean("from_edit", fromEdit);
-                                bundle3.putString("leadsDetails", leadsDetails);
-                                bundle3.putString("sessionId", sessionId);
-                                bundle3.putString("module_name", module_label);
-                                Intent iw = new Intent(getActivity(), EntryDetails_leads.class);
-                                iw.putExtras(bundle3);
-                                startActivity(iw);
-
-                                break;
-                            case "Meetings":
-                                Bundle bundle4 = new Bundle();
-                                String meetingDetails = name_value_list.toString();
-                                bundle4.putBoolean("from_edit", fromEdit);
-                                bundle4.putString("meetingDetails", meetingDetails);
-                                bundle4.putString("sessionId", sessionId);
-                                bundle4.putString("module_name", module_label);
-                                Intent ie = new Intent(getActivity(), EntryDetails_meetings.class);
-                                ie.putExtras(bundle4);
-                                startActivity(ie);
-
-                                break;
-                            case "Cases":
-                                Bundle bundle5 = new Bundle();
-                                String caseDetails = name_value_list.toString();
-                                bundle5.putBoolean("from_edit", fromEdit);
-                                bundle5.putString("caseDetails", caseDetails);
-                                bundle5.putString("sessionId", sessionId);
-                                bundle5.putString("module_name", module_label);
-                                Intent ir = new Intent(getActivity(), EntryDetails_cases.class);
-                                ir.putExtras(bundle5);
-                                startActivity(ir);
-
-                                break;
-                            case "Opportunities":
-                                Bundle bundle6 = new Bundle();
-                                String opportunutyDetails = name_value_list.toString();
-                                bundle6.putBoolean("from_edit", fromEdit);
-                                bundle6.putString("sessionId", sessionId);
-                                bundle6.putString("module_name", module_label);
-                                bundle6.putString("opportunutyDetails", opportunutyDetails);
-                                Intent it = new Intent(getActivity(), EntryDetails_opportunity.class);
-                                it.putExtras(bundle6);
-                                startActivity(it);
-
-                                break;
-                            case "Campaigns":
-                                Bundle bundle7 = new Bundle();
-                                String campaignsDetails = name_value_list.toString();
-                                bundle7.putBoolean("from_edit", fromEdit);
-                                bundle7.putString("sessionId", sessionId);
-                                bundle7.putString("module_name", module_label);
-                                bundle7.putString("campaignsDetails", campaignsDetails);
-                                Intent its = new Intent(getActivity(), EntryDetails_opportunity.class);
-                                its.putExtras(bundle7);
-                                startActivity(its);
-
-                                break;
-                            case "ProspectLists":
-                                Bundle bundle8 = new Bundle();
-                                String prospectsListDetails = name_value_list.toString();
-                                bundle8.putBoolean("from_edit", fromEdit);
-                                bundle8.putString("sessionId", sessionId);
-                                bundle8.putString("module_name", module_label);
-                                bundle8.putString("prospectsListDetails", prospectsListDetails);
-                                Intent itw = new Intent(getActivity(), EntryDetails_opportunity.class);
-                                itw.putExtras(bundle8);
-                                startActivity(itw);
-
-                                break;
-                            case "Prospects":
-                                Bundle bundle9 = new Bundle();
-                                String prospectsDetails = name_value_list.toString();
-                                bundle9.putBoolean("from_edit", fromEdit);
-                                bundle9.putString("sessionId", sessionId);
-                                bundle9.putString("module_name", module_label);
-                                bundle9.putString("prospectsDetails", prospectsDetails);
-                                Intent itr = new Intent(getActivity(), EntryDetails_opportunity.class);
-                                itr.putExtras(bundle9);
-                                startActivity(itr);
-
-                                break;
-                            case "Bugs":
-                                Bundle bundle10 = new Bundle();
-                                String response = name_value_list.toString();
-                                bundle10.putBoolean("from_edit", fromEdit);
-                                bundle10.putString("sessionId", sessionId);
-                                bundle10.putString("response", response);
-                                bundle10.putString("module_name", module_label);
-                                Intent ite = new Intent(getActivity(), EntryDetails_opportunity.class);
-                                ite.putExtras(bundle10);
-                                startActivity(ite);
-
-                                break;
-                            case "Tasks":
-                                Bundle bundle11 = new Bundle();
-                                String taskResponse = name_value_list.toString();
-                                bundle11.putBoolean("from_edit", fromEdit);
-                                bundle11.putString("sessionId", sessionId);
-                                bundle11.putString("module_name", module_label);
-                                bundle11.putString("response", taskResponse);
-                                Intent item = new Intent(getActivity(), EntryDetails_opportunity.class);
-                                item.putExtras(bundle11);
-                                startActivity(item);
-
-                                break;
-                            case "Project":
-                                Bundle bundle12 = new Bundle();
-                                String projectResponse = name_value_list.toString();
-                                bundle12.putBoolean("from_edit", fromEdit);
-                                bundle12.putString("sessionId", sessionId);
-                                bundle12.putString("module_name", module_label);
-                                bundle12.putString("response", projectResponse);
-                                Intent items = new Intent(getActivity(), EntryDetails_opportunity.class);
-                                items.putExtras(bundle12);
-                                startActivity(items);
-
-                                break;
-                            default:
-                                break;
-                        }
-
-                    } catch (Exception e) {
-                        Log.e("error", e.toString());
-                    }
-
-                    break;
-                case R.id.btn_call:
-                    try {
-                        Intent i = new Intent(Intent.ACTION_CALL);
-                        i.setData(Uri.parse("tel: " + phone_office));
-                        startActivity(i);
-
-                    } catch (Exception e) {
-                        Log.e("error", e.toString());
-                    }
-
-                    break;
-                case R.id.btn_email:
-                    try {
-
-                        Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                                "mailto", email1, null));
-                        //intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-                        //intent.putExtra(Intent.EXTRA_TEXT, message);
-                        startActivity(Intent.createChooser(intent, "Choose an Email client :"));
-
-                    } catch (Exception e) {
-                        Log.e("error", e.toString());
-                    }
-
-
-                    break;
-                case R.id.btn_text:
-                    try {
-                        Log.d("click", "txt button clicked");
-                        Intent ig = new Intent(Intent.ACTION_VIEW);
-                        ig.putExtra("address", phone_office);
-                        //intent.putExtra("sms_body", "messageBody");
-                        ig.setData(Uri.parse("smsto:" + phone_office));
-                        startActivity(ig);
-
-                    } catch (Exception e) {
-                        Log.e("error", e.toString());
-
-                    }
-                    break;
-                case R.id.btn_edit:
-                    try {
-                        switch (module_label) {
-                            case "Accounts":
-                                Bundle bundle = new Bundle();
-                                String accountDetails = name_value_list.toString();
-                                bundle.putString("accountDetails", accountDetails);
-                                bundle.putString("sessionId", sessionId);
-                                bundle.putString("restUrl", restUrl);
-                                bundle.putString("module_name", module_label);
-                                fromEdit = true;
-                                bundle.putBoolean("from_edit", fromEdit);
-                                AddNewAccount addNewAccount = new AddNewAccount();
-                                addNewAccount.setArguments(bundle);
-                                getFragmentManager().beginTransaction().replace(R.id.content_frame, addNewAccount, TAG).commit();
-                                break;
-                            case "Contacts":
-                                Bundle bundle1 = new Bundle();
-                                String contactDetails = name_value_list.toString();
-                                bundle1.putString("response", contactDetails);
-                                bundle1.putString("sessionId", sessionId);
-                                bundle1.putString("restUrl", restUrl);
-                                bundle1.putString("module_name", module_label);
-                                fromEdit = true;
-                                bundle1.putBoolean("from_edit", fromEdit);
-                                AddNewLeadsAndContactsAndTarget addNewcontact = new AddNewLeadsAndContactsAndTarget();
-                                addNewcontact.setArguments(bundle1);
-                                getFragmentManager().beginTransaction().replace(R.id.content_frame, addNewcontact, TAG).commit();
-
-                                break;
-                            case "Calls":
-                                Bundle bundle2 = new Bundle();
-                                String callDetails = name_value_list.toString();
-                                bundle2.putString("callDetails", callDetails);
-                                bundle2.putString("sessionId", sessionId);
-                                bundle2.putString("restUrl", restUrl);
-                                bundle2.putString("module_name", module_label);
-                                fromEdit = true;
-                                bundle2.putBoolean("from_edit", fromEdit);
-                                AddNewCall addNewCall = new AddNewCall();
-                                addNewCall.setArguments(bundle2);
-                                getFragmentManager().beginTransaction().replace(R.id.content_frame, addNewCall, TAG).commit();
-
-                                break;
-                            case "Leads":
-                                Bundle bundle3 = new Bundle();
-                                String leadsDetails = name_value_list.toString();
-                                bundle3.putString("response", leadsDetails);
-                                bundle3.putString("sessionId", sessionId);
-                                bundle3.putString("restUrl", restUrl);
-                                bundle3.putString("module_name", module_label);
-                                fromEdit = true;
-                                bundle3.putBoolean("from_edit", fromEdit);
-                                AddNewLeadsAndContactsAndTarget addNewLeads = new AddNewLeadsAndContactsAndTarget();
-                                addNewLeads.setArguments(bundle3);
-                                getFragmentManager().beginTransaction().replace(R.id.content_frame, addNewLeads, TAG).commit();
-                                break;
-                            case "Meetings":
-                                Bundle bundle4 = new Bundle();
-                                String meetingDetails = name_value_list.toString();
-                                bundle4.putString("meetingDetails", meetingDetails);
-                                bundle4.putString("sessionId", sessionId);
-                                bundle4.putString("module_name", module_label);
-                                bundle4.putString("restUrl", restUrl);
-                                fromEdit = true;
-                                bundle4.putBoolean("from_edit", fromEdit);
-                                AddNewMeeting addNewMeeting = new AddNewMeeting();
-                                addNewMeeting.setArguments(bundle4);
-                                getFragmentManager().beginTransaction().replace(R.id.content_frame, addNewMeeting, TAG).commit();
-
-                                break;
-                            case "Cases":
-                                Bundle bundle5 = new Bundle();
-                                String caseDetails = name_value_list.toString();
-                                bundle5.putString("caseDetails", caseDetails);
-                                bundle5.putString("sessionId", sessionId);
-                                bundle5.putString("restUrl", restUrl);
-                                bundle5.putString("module_name", module_label);
-                                fromEdit = true;
-                                bundle5.putBoolean("from_edit", fromEdit);
-                                AddNewCases addNewCases = new AddNewCases();
-                                addNewCases.setArguments(bundle5);
-                                getFragmentManager().beginTransaction().replace(R.id.content_frame, addNewCases, TAG).commit();
-
-                                break;
-                            case "Opportunities":
-                                Bundle bundle6 = new Bundle();
-                                String opportunutyDetails = name_value_list.toString();
-                                bundle6.putString("opportunutyDetails", opportunutyDetails);
-                                bundle6.putString("sessionId", sessionId);
-                                bundle6.putString("restUrl", restUrl);
-                                bundle6.putString("module_name", module_label);
-                                fromEdit = true;
-                                bundle6.putBoolean("from_edit", fromEdit);
-                                AddNewOpportunity addNewOpportunity = new AddNewOpportunity();
-                                addNewOpportunity.setArguments(bundle6);
-                                getFragmentManager().beginTransaction().replace(R.id.content_frame, addNewOpportunity, TAG).commit();
-
-                                break;
-                            case "Campaigns":
-                                Bundle bundle41 = new Bundle();
-                                String campaignsDetails = name_value_list.toString();
-                                bundle41.putString("campaignsDetails", campaignsDetails);
-                                bundle41.putString("sessionId", sessionId);
-                                bundle41.putString("restUrl", restUrl);
-                                bundle41.putString("module_name", module_label);
-                                fromEdit = true;
-                                bundle41.putBoolean("from_edit", fromEdit);
-                                AddNewCampaign addNewCampaign = new AddNewCampaign();
-                                addNewCampaign.setArguments(bundle41);
-                                getFragmentManager().beginTransaction().replace(R.id.content_frame, addNewCampaign, TAG).commit();
-
-                                break;
-                            case "ProspectLists":
-                                Bundle bundle51 = new Bundle();
-                                String prospectsListDetails = name_value_list.toString();
-                                bundle51.putString("prospectListsDetails", prospectsListDetails);
-                                bundle51.putString("sessionId", sessionId);
-                                bundle51.putString("restUrl", restUrl);
-                                bundle51.putString("module_name", module_label);
-                                fromEdit = true;
-                                bundle51.putBoolean("from_edit", fromEdit);
-                                AddNewTargetList addNewTargetList = new AddNewTargetList();
-                                addNewTargetList.setArguments(bundle51);
-                                getFragmentManager().beginTransaction().replace(R.id.content_frame, addNewTargetList, TAG).commit();
-
-                                break;
-                            case "Prospects":
-                                Bundle bundle9 = new Bundle();
-                                String prospectsDetails = name_value_list.toString();
-                                bundle9.putString("response", prospectsDetails);
-                                bundle9.putString("sessionId", sessionId);
-                                bundle9.putString("restUrl", restUrl);
-                                bundle9.putString("module_name", module_label);
-                                fromEdit = true;
-                                bundle9.putBoolean("from_edit", fromEdit);
-                                AddNewLeadsAndContactsAndTarget addNewTarget = new AddNewLeadsAndContactsAndTarget();
-                                addNewTarget.setArguments(bundle9);
-                                getFragmentManager().beginTransaction().replace(R.id.content_frame, addNewTarget, TAG).commit();
-
-                                break;
-                            case "Tasks":
-                                Bundle bundle10 = new Bundle();
-                                String taskDetails = name_value_list.toString();
-                                bundle10.putString("response", taskDetails);
-                                bundle10.putString("sessionId", sessionId);
-                                bundle10.putString("restUrl", restUrl);
-                                bundle10.putString("module_name", module_label);
-                                fromEdit = true;
-                                bundle10.putBoolean("from_edit", fromEdit);
-                                AddNewTasks addNewTask = new AddNewTasks();
-                                addNewTask.setArguments(bundle10);
-                                getFragmentManager().beginTransaction().replace(R.id.content_frame, addNewTask, TAG).commit();
-
-                                break;
-                            default:
-                                break;
-                        }
-
-                    } catch (Exception e) {
-                        Log.e("error", e.toString());
-                    }
-                    break;
-                default:
-                    break;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     // Add click listner for listView
@@ -1570,7 +1183,399 @@ public class EntriesDetailsController extends Fragment implements
             }
         }
     }
+    @Override
+    public void onClick(View v) {
+        try {
+            boolean fromEdit = true;
+            switch (v.getId()) {
+                case R.id.btn_more:
+                    try {
+                        Bundle bundle = new Bundle();
+                        String jsonResponse = name_value_list.toString();
+                        //bundle.putBoolean("from_edit", fromEdit);
+                        // bundle.putString("sessionId", sessionId);
+                        bundle.putString("module_name", module_label);
+                        bundle.putString("jsonResponse", jsonResponse);
+                        Log.d("jsonResponse", "" + jsonResponse.toString());
+                        Intent ih = new Intent(getActivity(), EntryDetailsView.class);
+                        ih.putExtras(bundle);
+                        startActivity(ih);
+                      /*  switch (module_label) {
+                            case "Accounts":
+                                Bundle bundle = new Bundle();
+                                String accountDetails = name_value_list.toString();
+                                bundle.putBoolean("from_edit", fromEdit);
+                                bundle.putString("sessionId", sessionId);
+                                bundle.putString("module_name", module_label);
+                                bundle.putString("accountDetails", accountDetails);
+                                Intent ih = new Intent(getActivity(), EntryDetailsView.class);
+                                ih.putExtras(bundle);
+                                startActivity(ih);
 
+                                break;
+                            case "Contacts":
+                                Bundle bundle1 = new Bundle();
+                                String contactDetails = name_value_list.toString();
+                                bundle1.putBoolean("from_edit", fromEdit);
+                                bundle1.putString("sessionId", sessionId);
+                                bundle1.putString("module_name", module_label);
+                                bundle1.putString("contactDetails", contactDetails);
+                                Intent ij = new Intent(getActivity(), EntryDetails_contacts.class);
+                                ij.putExtras(bundle1);
+                                startActivity(ij);
+
+                                break;
+                            case "Calls":
+                                Bundle bundle2 = new Bundle();
+                                String callDetails = name_value_list.toString();
+                                bundle2.putString("callDetails", callDetails);
+                                bundle2.putBoolean("from_edit", fromEdit);
+                                bundle2.putString("module_name", module_label);
+                                bundle2.putString("sessionId", sessionId);
+                                Intent iq = new Intent(getActivity(), EntryDetails_calls.class);
+                                iq.putExtras(bundle2);
+                                startActivity(iq);
+
+                                break;
+                            case "Leads":
+                                Bundle bundle3 = new Bundle();
+                                String leadsDetails = name_value_list.toString();
+                                bundle3.putBoolean("from_edit", fromEdit);
+                                bundle3.putString("leadsDetails", leadsDetails);
+                                bundle3.putString("sessionId", sessionId);
+                                bundle3.putString("module_name", module_label);
+                                Intent iw = new Intent(getActivity(), EntryDetails_leads.class);
+                                iw.putExtras(bundle3);
+                                startActivity(iw);
+
+                                break;
+                            case "Meetings":
+                                Bundle bundle4 = new Bundle();
+                                String meetingDetails = name_value_list.toString();
+                                bundle4.putBoolean("from_edit", fromEdit);
+                                bundle4.putString("meetingDetails", meetingDetails);
+                                bundle4.putString("sessionId", sessionId);
+                                bundle4.putString("module_name", module_label);
+                                Intent ie = new Intent(getActivity(), EntryDetails_meetings.class);
+                                ie.putExtras(bundle4);
+                                startActivity(ie);
+
+                                break;
+                            case "Cases":
+                                Bundle bundle5 = new Bundle();
+                                String caseDetails = name_value_list.toString();
+                                bundle5.putBoolean("from_edit", fromEdit);
+                                bundle5.putString("caseDetails", caseDetails);
+                                bundle5.putString("sessionId", sessionId);
+                                bundle5.putString("module_name", module_label);
+                                Intent ir = new Intent(getActivity(), EntryDetails_cases.class);
+                                ir.putExtras(bundle5);
+                                startActivity(ir);
+
+                                break;
+                            case "Opportunities":
+                                Bundle bundle6 = new Bundle();
+                                String opportunutyDetails = name_value_list.toString();
+                                bundle6.putBoolean("from_edit", fromEdit);
+                                bundle6.putString("sessionId", sessionId);
+                                bundle6.putString("module_name", module_label);
+                                bundle6.putString("opportunutyDetails", opportunutyDetails);
+                                Intent it = new Intent(getActivity(), EntryDetails_opportunity.class);
+                                it.putExtras(bundle6);
+                                startActivity(it);
+
+                                break;
+                            case "Campaigns":
+                                Bundle bundle7 = new Bundle();
+                                String campaignsDetails = name_value_list.toString();
+                                bundle7.putBoolean("from_edit", fromEdit);
+                                bundle7.putString("sessionId", sessionId);
+                                bundle7.putString("module_name", module_label);
+                                bundle7.putString("campaignsDetails", campaignsDetails);
+                                Intent its = new Intent(getActivity(), EntryDetails_opportunity.class);
+                                its.putExtras(bundle7);
+                                startActivity(its);
+
+                                break;
+                            case "ProspectLists":
+                                Bundle bundle8 = new Bundle();
+                                String prospectsListDetails = name_value_list.toString();
+                                bundle8.putBoolean("from_edit", fromEdit);
+                                bundle8.putString("sessionId", sessionId);
+                                bundle8.putString("module_name", module_label);
+                                bundle8.putString("prospectsListDetails", prospectsListDetails);
+                                Intent itw = new Intent(getActivity(), EntryDetails_opportunity.class);
+                                itw.putExtras(bundle8);
+                                startActivity(itw);
+
+                                break;
+                            case "Prospects":
+                                Bundle bundle9 = new Bundle();
+                                String prospectsDetails = name_value_list.toString();
+                                bundle9.putBoolean("from_edit", fromEdit);
+                                bundle9.putString("sessionId", sessionId);
+                                bundle9.putString("module_name", module_label);
+                                bundle9.putString("prospectsDetails", prospectsDetails);
+                                Intent itr = new Intent(getActivity(), EntryDetails_opportunity.class);
+                                itr.putExtras(bundle9);
+                                startActivity(itr);
+
+                                break;
+                            case "Bugs":
+                                Bundle bundle10 = new Bundle();
+                                String response = name_value_list.toString();
+                                bundle10.putBoolean("from_edit", fromEdit);
+                                bundle10.putString("sessionId", sessionId);
+                                bundle10.putString("response", response);
+                                bundle10.putString("module_name", module_label);
+                                Intent ite = new Intent(getActivity(), EntryDetails_opportunity.class);
+                                ite.putExtras(bundle10);
+                                startActivity(ite);
+
+                                break;
+                            case "Tasks":
+                                Bundle bundle11 = new Bundle();
+                                String taskResponse = name_value_list.toString();
+                                bundle11.putBoolean("from_edit", fromEdit);
+                                bundle11.putString("sessionId", sessionId);
+                                bundle11.putString("module_name", module_label);
+                                bundle11.putString("response", taskResponse);
+                                Intent item = new Intent(getActivity(), EntryDetails_opportunity.class);
+                                item.putExtras(bundle11);
+                                startActivity(item);
+
+                                break;
+                            case "Project":
+                                Bundle bundle12 = new Bundle();
+                                String projectResponse = name_value_list.toString();
+                                bundle12.putBoolean("from_edit", fromEdit);
+                                bundle12.putString("sessionId", sessionId);
+                                bundle12.putString("module_name", module_label);
+                                bundle12.putString("response", projectResponse);
+                                Intent items = new Intent(getActivity(), EntryDetails_opportunity.class);
+                                items.putExtras(bundle12);
+                                startActivity(items);
+
+                                break;
+                            default:
+                                break;
+                        }*/
+
+                    } catch (Exception e) {
+                        Log.e("error", e.toString());
+                    }
+
+                    break;
+                case R.id.btn_call:
+                    try {
+                        Intent i = new Intent(Intent.ACTION_CALL);
+                        i.setData(Uri.parse("tel: " + phone_office));
+                        startActivity(i);
+
+                    } catch (Exception e) {
+                        Log.e("error", e.toString());
+                    }
+
+                    break;
+                case R.id.btn_email:
+                    try {
+
+                        Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                                "mailto", email1, null));
+                        //intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                        //intent.putExtra(Intent.EXTRA_TEXT, message);
+                        startActivity(Intent.createChooser(intent, "Choose an Email client :"));
+
+                    } catch (Exception e) {
+                        Log.e("error", e.toString());
+                    }
+
+
+                    break;
+                case R.id.btn_text:
+                    try {
+                        Log.d("click", "txt button clicked");
+                        Intent ig = new Intent(Intent.ACTION_VIEW);
+                        ig.putExtra("address", phone_office);
+                        //intent.putExtra("sms_body", "messageBody");
+                        ig.setData(Uri.parse("smsto:" + phone_office));
+                        startActivity(ig);
+
+                    } catch (Exception e) {
+                        Log.e("error", e.toString());
+
+                    }
+                    break;
+                case R.id.btn_edit:
+                    try {
+                        switch (module_label) {
+                            case "Accounts":
+                                Bundle bundle = new Bundle();
+                                String accountDetails = name_value_list.toString();
+                                bundle.putString("accountDetails", accountDetails);
+                                bundle.putString("sessionId", sessionId);
+                                bundle.putString("restUrl", restUrl);
+                                bundle.putString("module_name", module_label);
+                                fromEdit = true;
+                                bundle.putBoolean("from_edit", fromEdit);
+                                AddNewAccount addNewAccount = new AddNewAccount();
+                                addNewAccount.setArguments(bundle);
+                                getFragmentManager().beginTransaction().replace(R.id.content_frame, addNewAccount, TAG).commit();
+                                break;
+                            case "Contacts":
+                                Bundle bundle1 = new Bundle();
+                                String contactDetails = name_value_list.toString();
+                                bundle1.putString("response", contactDetails);
+                                bundle1.putString("sessionId", sessionId);
+                                bundle1.putString("restUrl", restUrl);
+                                bundle1.putString("module_name", module_label);
+                                fromEdit = true;
+                                bundle1.putBoolean("from_edit", fromEdit);
+                                AddNewLeadsAndContactsAndTarget addNewcontact = new AddNewLeadsAndContactsAndTarget();
+                                addNewcontact.setArguments(bundle1);
+                                getFragmentManager().beginTransaction().replace(R.id.content_frame, addNewcontact, TAG).commit();
+
+                                break;
+                            case "Calls":
+                                Bundle bundle2 = new Bundle();
+                                String callDetails = name_value_list.toString();
+                                bundle2.putString("callDetails", callDetails);
+                                bundle2.putString("sessionId", sessionId);
+                                bundle2.putString("restUrl", restUrl);
+                                bundle2.putString("module_name", module_label);
+                                fromEdit = true;
+                                bundle2.putBoolean("from_edit", fromEdit);
+                                AddNewCall addNewCall = new AddNewCall();
+                                addNewCall.setArguments(bundle2);
+                                getFragmentManager().beginTransaction().replace(R.id.content_frame, addNewCall, TAG).commit();
+
+                                break;
+                            case "Leads":
+                                Bundle bundle3 = new Bundle();
+                                String leadsDetails = name_value_list.toString();
+                                bundle3.putString("response", leadsDetails);
+                                bundle3.putString("sessionId", sessionId);
+                                bundle3.putString("restUrl", restUrl);
+                                bundle3.putString("module_name", module_label);
+                                fromEdit = true;
+                                bundle3.putBoolean("from_edit", fromEdit);
+                                AddNewLeadsAndContactsAndTarget addNewLeads = new AddNewLeadsAndContactsAndTarget();
+                                addNewLeads.setArguments(bundle3);
+                                getFragmentManager().beginTransaction().replace(R.id.content_frame, addNewLeads, TAG).commit();
+                                break;
+                            case "Meetings":
+                                Bundle bundle4 = new Bundle();
+                                String meetingDetails = name_value_list.toString();
+                                bundle4.putString("meetingDetails", meetingDetails);
+                                bundle4.putString("sessionId", sessionId);
+                                bundle4.putString("module_name", module_label);
+                                bundle4.putString("restUrl", restUrl);
+                                fromEdit = true;
+                                bundle4.putBoolean("from_edit", fromEdit);
+                                AddNewMeeting addNewMeeting = new AddNewMeeting();
+                                addNewMeeting.setArguments(bundle4);
+                                getFragmentManager().beginTransaction().replace(R.id.content_frame, addNewMeeting, TAG).commit();
+
+                                break;
+                            case "Cases":
+                                Bundle bundle5 = new Bundle();
+                                String caseDetails = name_value_list.toString();
+                                bundle5.putString("caseDetails", caseDetails);
+                                bundle5.putString("sessionId", sessionId);
+                                bundle5.putString("restUrl", restUrl);
+                                bundle5.putString("module_name", module_label);
+                                fromEdit = true;
+                                bundle5.putBoolean("from_edit", fromEdit);
+                                AddNewCases addNewCases = new AddNewCases();
+                                addNewCases.setArguments(bundle5);
+                                getFragmentManager().beginTransaction().replace(R.id.content_frame, addNewCases, TAG).commit();
+
+                                break;
+                            case "Opportunities":
+                                Bundle bundle6 = new Bundle();
+                                String opportunutyDetails = name_value_list.toString();
+                                bundle6.putString("opportunutyDetails", opportunutyDetails);
+                                bundle6.putString("sessionId", sessionId);
+                                bundle6.putString("restUrl", restUrl);
+                                bundle6.putString("module_name", module_label);
+                                fromEdit = true;
+                                bundle6.putBoolean("from_edit", fromEdit);
+                                AddNewOpportunity addNewOpportunity = new AddNewOpportunity();
+                                addNewOpportunity.setArguments(bundle6);
+                                getFragmentManager().beginTransaction().replace(R.id.content_frame, addNewOpportunity, TAG).commit();
+
+                                break;
+                            case "Campaigns":
+                                Bundle bundle41 = new Bundle();
+                                String campaignsDetails = name_value_list.toString();
+                                bundle41.putString("campaignsDetails", campaignsDetails);
+                                bundle41.putString("sessionId", sessionId);
+                                bundle41.putString("restUrl", restUrl);
+                                bundle41.putString("module_name", module_label);
+                                fromEdit = true;
+                                bundle41.putBoolean("from_edit", fromEdit);
+                                AddNewCampaign addNewCampaign = new AddNewCampaign();
+                                addNewCampaign.setArguments(bundle41);
+                                getFragmentManager().beginTransaction().replace(R.id.content_frame, addNewCampaign, TAG).commit();
+
+                                break;
+                            case "ProspectLists":
+                                Bundle bundle51 = new Bundle();
+                                String prospectsListDetails = name_value_list.toString();
+                                bundle51.putString("prospectListsDetails", prospectsListDetails);
+                                bundle51.putString("sessionId", sessionId);
+                                bundle51.putString("restUrl", restUrl);
+                                bundle51.putString("module_name", module_label);
+                                fromEdit = true;
+                                bundle51.putBoolean("from_edit", fromEdit);
+                                AddNewTargetList addNewTargetList = new AddNewTargetList();
+                                addNewTargetList.setArguments(bundle51);
+                                getFragmentManager().beginTransaction().replace(R.id.content_frame, addNewTargetList, TAG).commit();
+
+                                break;
+                            case "Prospects":
+                                Bundle bundle9 = new Bundle();
+                                String prospectsDetails = name_value_list.toString();
+                                bundle9.putString("response", prospectsDetails);
+                                bundle9.putString("sessionId", sessionId);
+                                bundle9.putString("restUrl", restUrl);
+                                bundle9.putString("module_name", module_label);
+                                fromEdit = true;
+                                bundle9.putBoolean("from_edit", fromEdit);
+                                AddNewLeadsAndContactsAndTarget addNewTarget = new AddNewLeadsAndContactsAndTarget();
+                                addNewTarget.setArguments(bundle9);
+                                getFragmentManager().beginTransaction().replace(R.id.content_frame, addNewTarget, TAG).commit();
+
+                                break;
+                            case "Tasks":
+                                Bundle bundle10 = new Bundle();
+                                String taskDetails = name_value_list.toString();
+                                bundle10.putString("response", taskDetails);
+                                bundle10.putString("sessionId", sessionId);
+                                bundle10.putString("restUrl", restUrl);
+                                bundle10.putString("module_name", module_label);
+                                fromEdit = true;
+                                bundle10.putBoolean("from_edit", fromEdit);
+                                AddNewTasks addNewTask = new AddNewTasks();
+                                addNewTask.setArguments(bundle10);
+                                getFragmentManager().beginTransaction().replace(R.id.content_frame, addNewTask, TAG).commit();
+
+                                break;
+                            default:
+                                break;
+                        }
+
+                    } catch (Exception e) {
+                        Log.e("error", e.toString());
+                    }
+                    break;
+                default:
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     class getRelationship extends AsyncTask<String, String, String> {
 
         private String entry_id;

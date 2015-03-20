@@ -60,6 +60,7 @@ import com.androidcrm.wakensys.sugercrm.fragment.Fragment_home;
 public class MainActivity extends ActionBarActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
     public static List<String> moduleNames;
     public static String module_name;
     private static HttpClient httpClient = new DefaultHttpClient();
@@ -85,6 +86,7 @@ public class MainActivity extends ActionBarActivity {
     private boolean canViewModules = false;
     private String module_name_value;
     private String module_key_value;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -411,8 +413,9 @@ public class MainActivity extends ActionBarActivity {
                                     action_view = 0;
                                     // cannotViewModules.add(module_key);
                                     // canViewModules = false;
-                                } else if (value == true) {
+                                } else if (value == true && (!"".equals(module_label) && module_label != null)) {
                                     //Add module name only User Access True
+
                                     moduleName.add(module_label);
                                     moduleKeyList.add(module_key);
                                     // canViewModules = true;
@@ -436,7 +439,7 @@ public class MainActivity extends ActionBarActivity {
                                 }
                             }
                         }
-                        long id = databaseAdapter.InsertAvailableModules(module_key, module_label, favorite_enabled, action_edit, action_delete, action_list, action_view, action_import, action_export);
+                        // long id = databaseAdapter.InsertAvailableModules(module_key, module_label, favorite_enabled, action_edit, action_delete, action_list, action_view, action_import, action_export);
                     }
 
 
@@ -456,39 +459,7 @@ public class MainActivity extends ActionBarActivity {
 
                 }
             } else {
-
-                Cursor csr = databaseAdapter.getAllAvailableModule_1();
-
-                int i = 0;
-
-                String[] moduleLabel = new String[(csr.getCount() - 1)];
-                String[] actionView = new String[(csr.getCount() - 1)];
-                String[] moduleKey = new String[(csr.getCount() - 1)];
-
-                csr.moveToFirst();
-
-                while (csr.moveToNext()) {
-                    moduleKey[i] = csr.getString(2);
-                    moduleLabel[i] = csr.getString(2);
-                    actionView[i] = csr.getString(8);
-
-                    i++;
-                }
-
-                for (int j = 0; j < actionView.length; j++) {
-
-                    String accessView = actionView[j];
-
-                    if (accessView.equals("1")) {
-                        Log.d("LOG", accessView + " " + moduleLabel[j]);
-                        moduleKeyList.add(moduleKey[j]);
-                        moduleName.add(moduleLabel[j]);
-                    }
-
-                }
-                MenuListAdapter menuAdapter = new MenuListAdapter(
-                        getApplicationContext(), moduleName, photo);
-                mDrawerList.setAdapter(menuAdapter);
+            //  Do the SQLite
             }
         }
     }

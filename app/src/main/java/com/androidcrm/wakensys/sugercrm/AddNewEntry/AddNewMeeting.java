@@ -100,9 +100,8 @@ public class AddNewMeeting extends Fragment implements View.OnClickListener {
         btn_save = (Button) rootView.findViewById(R.id.btn_save);
         btn_cancel = (Button) rootView.findViewById(R.id.btn_cancel);
         btn_start_date = (Button) rootView.findViewById(R.id.btn_start_date);
-        btn_start_time = (Button) rootView.findViewById(R.id.btn_start_time);
         btn_end_date = (Button) rootView.findViewById(R.id.btn_end_date);
-        btn_end_time = (Button) rootView.findViewById(R.id.btn_end_time);
+        //btn_end_time = (Button) rootView.findViewById(R.id.btn_end_time);
         // Get the reference of Spinners
         status_2 = (Spinner) rootView.findViewById(R.id.spinner_in_out);
         relatedTo_moduleName = (Spinner) rootView.findViewById(R.id.spinner_entry_name);
@@ -117,9 +116,8 @@ public class AddNewMeeting extends Fragment implements View.OnClickListener {
         btn_save.setOnClickListener(this);
         btn_cancel.setOnClickListener(this);
         btn_start_date.setOnClickListener(this);
-        btn_start_time.setOnClickListener(this);
         btn_end_date.setOnClickListener(this);
-        btn_end_time.setOnClickListener(this);
+        //btn_end_time.setOnClickListener(this);
         // Array list for DurationMinutes
         durationList = new ArrayList<String>();
         durationList.add("None");
