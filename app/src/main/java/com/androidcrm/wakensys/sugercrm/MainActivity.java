@@ -53,6 +53,8 @@ import com.androidcrm.wakensys.sugercrm.AdapterClass.DrawerListAdapter;
 import com.androidcrm.wakensys.sugercrm.AdapterClass.MenuListAdapter;
 import com.androidcrm.wakensys.sugercrm.AddNewEntry.AddNewItem_SelectMenu;
 import com.androidcrm.wakensys.sugercrm.data_sync.CrmDatabaseAdapter;
+import com.androidcrm.wakensys.sugercrm.data_sync.DatabaseHandler;
+import com.androidcrm.wakensys.sugercrm.data_sync.Module;
 import com.androidcrm.wakensys.sugercrm.fragment.Fragment_Calendar;
 import com.androidcrm.wakensys.sugercrm.fragment.Fragment_Entries;
 import com.androidcrm.wakensys.sugercrm.fragment.Fragment_home;
@@ -92,9 +94,28 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        module_name_value = getTitle().toString();
+        DatabaseHandler db = new DatabaseHandler(this);
 
-        databaseAdapter = new CrmDatabaseAdapter(this);
+        /**
+         * CRUD Operations
+         * */
+        // Inserting Contacts
+        Log.d("Insert: ", "Inserting ..");
+        db.addModule(new Module("Ravi", "9100000000",0));
+        db.addModule(new Module("Srinivas", "9199999999",1));
+        db.addModule(new Module("Tommy", "9522222222",2));
+        db.addModule(new Module("Karthik", "9533333333",4));
+
+        // Reading all contacts
+        Log.d("Reading: ", "Reading all contacts..");
+        List<Module> contacts = db.getAllModules();
+
+        for (Module cn : contacts) {
+            String log = "Id: " + cn.getID() + " ,KEY: " + cn.getModuleKey() + " ,NAME: " + cn.get_module_label() + " ,ACCESS: " + cn.getViewAccess();
+            // Writing Contacts to log
+            Log.d("Name: ", log);
+        }
+        module_name_value = getTitle().toString();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
 

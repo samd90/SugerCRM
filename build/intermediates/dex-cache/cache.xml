@@ -9,6 +9,13 @@
         <dex dex="C:\Users\Wakensys\Google Drive\SugerCRM\app\build\intermediates\pre-dexed\debug\internal_impl-21.0.3-8d261ab09f441ed8b58dd9f391e9d3c81d05b76a.jar" />
     </item>
     <item
+        jar="C:\Users\Wakensys\Documents\MEGAsync\SugerCRM\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="2c91c949a45a21cdecf26e03951e46c7beec9ad8">
+        <dex dex="C:\Users\Wakensys\Documents\MEGAsync\SugerCRM\app\build\intermediates\pre-dexed\debug\classes-7c16fba69e7c8afaa19c87859ab50ceb6ef6eeaf.jar" />
+    </item>
+    <item
         jar="C:\Users\Wakensys\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\21.0.3\support-annotations-21.0.3.jar"
         jumboMode="false"
         revision="21.1.2"
@@ -16,11 +23,32 @@
         <dex dex="C:\Users\Wakensys\Google Drive\SugerCRM\app\build\intermediates\pre-dexed\debug\support-annotations-21.0.3-592f3618658b3603c4d7354e31afeeea8109f918.jar" />
     </item>
     <item
+        jar="C:\Users\Wakensys\Documents\MEGAsync\SugerCRM\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\libs\internal_impl-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="01ec05bfbafcc07646ba813000bf2ef11742dd03">
+        <dex dex="C:\Users\Wakensys\Documents\MEGAsync\SugerCRM\app\build\intermediates\pre-dexed\debug\internal_impl-21.0.3-bb6331a47ec5611ca1a8415e3339ff14e71cc231.jar" />
+    </item>
+    <item
+        jar="C:\Users\Wakensys\Documents\MEGAsync\SugerCRM\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\21.0.3\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
+        <dex dex="C:\Users\Wakensys\Documents\MEGAsync\SugerCRM\app\build\intermediates\pre-dexed\debug\classes-14ec5e8ea1b0c616aec038ab1ddda11e51ae3f75.jar" />
+    </item>
+    <item
         jar="C:\Users\Wakensys\Google Drive\SugerCRM\app\libs\json_simple-1.1.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="5e303a03d04e6788dddfa3655272580ae0fc13bb">
         <dex dex="C:\Users\Wakensys\Google Drive\SugerCRM\app\build\intermediates\pre-dexed\debug\json_simple-1.1-d131ebf5d9a135f970462de8aefa6856fdd8b2f6.jar" />
+    </item>
+    <item
+        jar="C:\Users\Wakensys\Documents\MEGAsync\SugerCRM\app\libs\json_simple-1.1.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="5e303a03d04e6788dddfa3655272580ae0fc13bb">
+        <dex dex="C:\Users\Wakensys\Documents\MEGAsync\SugerCRM\app\build\intermediates\pre-dexed\debug\json_simple-1.1-0ee971f94acc8eff43c6623cd4e12b2ab0033ccb.jar" />
     </item>
     <item
         jar="C:\Users\Wakensys\Google Drive\SugerCRM\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\21.0.3\classes.jar"
