@@ -19,6 +19,7 @@ import static com.androidcrm.wakensys.sugercrm.MainActivity.moduleNames;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,12 +51,14 @@ import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+
+import com.androidcrm.wakensys.sugercrm.AdapterClass.ExpandableListAdapter;
 import com.androidcrm.wakensys.sugercrm.AdapterClass.ListAdapter;
 import com.androidcrm.wakensys.sugercrm.R;
-import com.androidcrm.wakensys.sugercrm.data_sync.CrmDatabaseAdapter;
 
 public class Fragment_home extends Fragment implements OnClickListener, OnEditorActionListener, AdapterView.OnItemClickListener {
 
@@ -93,7 +96,6 @@ public class Fragment_home extends Fragment implements OnClickListener, OnEditor
 
     private TextView text;
 
-    CrmDatabaseAdapter databaseAdapter ;
 
     public final static String TAG = Fragment_home.class.getSimpleName();
 
@@ -105,14 +107,28 @@ public class Fragment_home extends Fragment implements OnClickListener, OnEditor
     public void callParentMethod() {
         getActivity().onBackPressed();
     }
+    ExpandableListAdapter listAdapter;
+    ExpandableListView expListView;
+    List<String> listDataHeader;
+    HashMap<String, List<String>> listDataChild;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_home, container,
+        View rootView = inflater.inflate(R.layout.fragment_recent, container,
                 false);
         try {
+            // get the listview
+            expListView = (ExpandableListView) rootView.findViewById(R.id.li_ex);
+
+            // preparing list data
+            prepareListData();
+
+            listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild);
+
+            // setting list adapter
+            expListView.setAdapter(listAdapter);
 
             module_ = new ArrayList<String>();
             search = (EditText) rootView.findViewById(R.id.et_search);
@@ -136,8 +152,6 @@ public class Fragment_home extends Fragment implements OnClickListener, OnEditor
             display_entry = new ArrayList<String>();
             entry_co = new ArrayList<String>();
 
-            databaseAdapter = new CrmDatabaseAdapter(getActivity());
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -145,6 +159,47 @@ public class Fragment_home extends Fragment implements OnClickListener, OnEditor
         return rootView;
     }
 
+    /*
+         * Preparing the list data
+         */
+    private void prepareListData() {
+        listDataHeader = new ArrayList<String>();
+        listDataChild = new HashMap<String, List<String>>();
+
+        // Adding child data
+        listDataHeader.add("Top 250");
+        listDataHeader.add("Now Showing");
+        listDataHeader.add("Coming Soon..");
+
+        // Adding child data
+        List<String> top250 = new ArrayList<String>();
+        top250.add("The Shawshank Redemption");
+        top250.add("The Godfather");
+        top250.add("The Godfather: Part II");
+        top250.add("Pulp Fiction");
+        top250.add("The Good, the Bad and the Ugly");
+        top250.add("The Dark Knight");
+        top250.add("12 Angry Men");
+
+        List<String> nowShowing = new ArrayList<String>();
+        nowShowing.add("The Conjuring");
+        nowShowing.add("Despicable Me 2");
+        nowShowing.add("Turbo");
+        nowShowing.add("Grown Ups 2");
+        nowShowing.add("Red 2");
+        nowShowing.add("The Wolverine");
+
+        List<String> comingSoon = new ArrayList<String>();
+        comingSoon.add("2 Guns");
+        comingSoon.add("The Smurfs 2");
+        comingSoon.add("The Spectacular Now");
+        comingSoon.add("The Canyons");
+        comingSoon.add("Europa Report");
+
+        listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
+        listDataChild.put(listDataHeader.get(1), nowShowing);
+        listDataChild.put(listDataHeader.get(2), comingSoon);
+    }
 
 
     class LoadingModuleLayout extends AsyncTask<String, String, String> {
@@ -227,32 +282,11 @@ public class Fragment_home extends Fragment implements OnClickListener, OnEditor
                     item_ids.add(item_id);
 
 
-                    long get_id = databaseAdapter.InsertLastViwed(item_id, id, item_summary, module_name);
-                        if (get_id > 0){
-                            Log.d("Successful", "Successful");
-                        }else
-                        {
-                            Log.d("Error","error");
-                        }
+
                 }
 
-                Cursor curser = databaseAdapter.getLastViewData();
-                int i = 0;
-                String[] itemLabel = new String[(curser.getCount()-1)];
-                String[] moduleName = new String[(curser.getCount()-1)];
 
-                curser.moveToFirst();
 
-                while (curser.moveToNext()) {
-
-                    itemLabel[i] = curser.getString(3);
-                    moduleName[i] = curser.getString(4);
-
-                    item_summaries.add(itemLabel[i]);
-                    item_names.add(moduleName[i]);
-
-                    i++;
-                }
 
                 Log.d("module_name", item_ids.toString());
                 Log.d("item_summary", item_summaries.toString());

@@ -45,7 +45,9 @@ import org.json.JSONObject;
 import com.androidcrm.wakensys.sugercrm.R;
 
 import com.androidcrm.wakensys.sugercrm.AdapterClass.EntriesListAdapter;
-import com.androidcrm.wakensys.sugercrm.data_sync.CrmDatabaseAdapter;
+import com.androidcrm.wakensys.sugercrm.data_sync.AllRecords;
+import com.androidcrm.wakensys.sugercrm.data_sync.DatabaseHandler;
+
 
 import android.app.ProgressDialog;
 import android.database.Cursor;
@@ -82,7 +84,7 @@ public class Fragment_Entries extends Fragment implements
     private String query, orderBy, offset, maxResults, deleted, acc_name, entry_id;
     private String[] selectFields;
     private Map<String, List<String>> linkNameToFieldsArray;
-    private String module_name;
+    public static String module_name;
     // Button btnFav;
     private ListView mEntryList;
     private List<String> entry_co;
@@ -90,7 +92,8 @@ public class Fragment_Entries extends Fragment implements
     private String sessionId = null;
     private String restUrl = null;
     private String module_label = null;
-    private CrmDatabaseAdapter databseAdapter;
+
+    DatabaseHandler db;
 
     public static Fragment_Entries newInstance() {
         return new Fragment_Entries();
@@ -103,6 +106,8 @@ public class Fragment_Entries extends Fragment implements
         View rootView = inflater.inflate(R.layout.fragment_entries, container,
                 false);
         try {
+            db = new DatabaseHandler(getActivity());
+
             mEntryList = (ListView) rootView.findViewById(R.id.lv_getEntry);
             mEntryList.setOnItemClickListener(this);
             entry_cnt_names = new ArrayList<String>();
@@ -126,7 +131,6 @@ public class Fragment_Entries extends Fragment implements
             boolean comeFromEntriesDetailsController = false;
             comeFromEntriesDetailsController = b.getBoolean("relationship");
             String module_name_enries_details_cntrl = b.getString("linkFieldName");
-            databseAdapter = new CrmDatabaseAdapter(getActivity());
 
             //Check whether Which rest call want to use get_relationship or get_entryList
             if (comeFromEntriesDetailsController == true) {
@@ -221,6 +225,7 @@ public class Fragment_Entries extends Fragment implements
         private boolean successful = false;
         private String errorMessage = null;
         private String moduleLabel = null;
+        String other_module_name;
 
         @Override
         protected void onPreExecute() {
@@ -328,13 +333,14 @@ public class Fragment_Entries extends Fragment implements
                         JSONObject nameValueList = obj.getJSONObject("name_value_list");
                         JSONObject name_value = nameValueList.getJSONObject("name");
                         String id = obj.getString("id");
-                        String other_module_name = obj.getString("module_name");
+                        other_module_name = obj.getString("module_name");
 
                         module_names.add(other_module_name);
                         entry_ids.add(id);
                         String nameValue = name_value.getString("value");
 
                         entry_names.add(nameValue);
+                        db.addAllRecord(new AllRecords(nameValue, other_module_name));
                     }
                     //Add entry_names Array to array adapter
                     EntriesListAdapter draweradapter = new EntriesListAdapter(getActivity().getApplicationContext(), entry_names);
@@ -344,159 +350,27 @@ public class Fragment_Entries extends Fragment implements
                     e.printStackTrace();
                 }
 
-            }// ----------------------------------------------- didnt add target,targetlist,bug,projects,campaigns,task to sqlite
+            }// ----------------------------------------------- didnt add target,targetList,bug,projects,campaigns,task to sqlite
             else {
-                if (module_name.equals("Accounts")) {
-                    try {
-                        Cursor csr = databseAdapter.getAllAccount();
-                        int i = 0;
-                        String[] moduleId = new String[(csr.getCount() - 1)];
-                        String[] moduleLabel = new String[(csr.getCount() - 1)];
-                        csr.moveToFirst();
 
-                        while (csr.moveToNext()) {
-                            moduleId[i] = csr.getString(0);
-                            moduleLabel[i] = csr.getString(1);
-                            entry_ids.add(moduleId[i]);
-                            entry_names.add(moduleLabel[i]);
-                            i++;
-                        }
+                    //  Do the SQLite
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                Log.d("Reading: ", "Reading all records..");
+                List<AllRecords> allRecords = db.getAllRecords();
+                String record = null;
+                for (AllRecords ar : allRecords) {
+                    record = ar.get_name();
+                    String mo_n = ar.get_module_name();
 
-                } else if (module_name.equals("Calls")) {
-                    try {
+                    entry_names.add(record);
 
-                        Cursor csr = databseAdapter.getAllCall();
-                        int i = 0;
-                        String[] moduleId = new String[(csr.getCount() - 1)];
-                        String[] moduleLabel = new String[(csr.getCount() - 1)];
-                        csr.moveToFirst();
-
-                        while (csr.moveToNext()) {
-                            moduleId[i] = csr.getString(0);
-                            moduleLabel[i] = csr.getString(1);
-                            entry_ids.add(moduleId[i]);
-                            entry_names.add(moduleLabel[i]);
-                            i++;
-                        }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                } else if (module_name.equals("Cases")) {
-                    try {
-
-                        Cursor csr = databseAdapter.getAllCases();
-                        int i = 0;
-                        String[] moduleId = new String[(csr.getCount() - 1)];
-                        String[] moduleLabel = new String[(csr.getCount() - 1)];
-                        csr.moveToFirst();
-
-                        while (csr.moveToNext()) {
-                            moduleId[i] = csr.getString(0);
-                            moduleLabel[i] = csr.getString(1);
-                            entry_ids.add(moduleId[i]);
-                            entry_names.add(moduleLabel[i]);
-                            i++;
-                        }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else if (module_name.equals("Contacts")) {
-                    try {
-
-                        Cursor csr = databseAdapter.getAllContacts();
-                        int i = 0;
-                        String[] moduleId = new String[(csr.getCount() - 1)];
-                        String[] firstName = new String[(csr.getCount() - 1)];
-                        String[] last_name = new String[(csr.getCount() - 1)];
-                        csr.moveToFirst();
-
-                        while (csr.moveToNext()) {
-                            moduleId[i] = csr.getString(0);
-                            firstName[i] = csr.getString(1);
-                            last_name[i] = csr.getString(2);
-                            String name = firstName[i] + " " + last_name[i];
-                            entry_ids.add(moduleId[i]);
-                            entry_names.add(name);
-                            i++;
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                } else if (module_name.equals("Leads")) {
-                    try {
-
-                        Cursor csr = databseAdapter.getAllLeads();
-                        int i = 0;
-                        String[] moduleId = new String[(csr.getCount() - 1)];
-                        String[] firstName = new String[(csr.getCount() - 1)];
-                        String[] last_name = new String[(csr.getCount() - 1)];
-                        csr.moveToFirst();
-
-                        while (csr.moveToNext()) {
-                            moduleId[i] = csr.getString(0);
-                            firstName[i] = csr.getString(1);
-                            last_name[i] = csr.getString(2);
-                            String name = firstName[i] + " " + last_name[i];
-                            entry_ids.add(moduleId[i]);
-                            entry_names.add(name);
-                            i++;
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                } else if (module_name.equals("Meetings")) {
-                    try {
-
-                        Cursor csr = databseAdapter.getAllMeetings();
-                        int i = 0;
-                        String[] moduleId = new String[(csr.getCount() - 1)];
-                        String[] moduleLabel = new String[(csr.getCount() - 1)];
-                        csr.moveToFirst();
-
-                        while (csr.moveToNext()) {
-                            moduleId[i] = csr.getString(0);
-                            moduleLabel[i] = csr.getString(1);
-                            entry_ids.add(moduleId[i]);
-                            entry_names.add(moduleLabel[i]);
-                            i++;
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                } else if (module_name.equals("Opportunities")) {
-                    try {
-
-                        Cursor csr = databseAdapter.getAllOpportunities();
-                        int i = 0;
-                        String[] moduleId = new String[(csr.getCount() - 1)];
-                        String[] moduleLabel = new String[(csr.getCount() - 1)];
-                        csr.moveToFirst();
-
-                        while (csr.moveToNext()) {
-                            moduleId[i] = csr.getString(0);
-                            moduleLabel[i] = csr.getString(1);
-                            entry_ids.add(moduleId[i]);
-                            entry_names.add(moduleLabel[i]);
-                            i++;
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    Log.d("Reading", record + " " + mo_n);
                 }
 
-                Toast.makeText(getActivity(), "Error ! " + errorMessage, Toast.LENGTH_LONG).show();
-                EntriesListAdapter drawerAdapter = new EntriesListAdapter(getActivity().getApplicationContext(), entry_names);
-                mEntryList.setAdapter(drawerAdapter);
+                    Toast.makeText(getActivity(), "Error ! " + errorMessage, Toast.LENGTH_LONG).show();
+                    EntriesListAdapter drawerAdapter = new EntriesListAdapter(getActivity().getApplicationContext(), entry_names);
+                    mEntryList.setAdapter(drawerAdapter);
+
             }
         }
     }
@@ -654,8 +528,6 @@ public class Fragment_Entries extends Fragment implements
             }
 
         }
-
-
 
 
     }

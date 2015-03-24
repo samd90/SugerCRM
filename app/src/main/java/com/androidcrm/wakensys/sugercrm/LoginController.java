@@ -6,6 +6,7 @@ import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.IN
 import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.JSON;
 import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.LOGIN;
 import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.METHOD;
+import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.MODULES;
 import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.NAME_VALUE_LIST;
 import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.PASSWORD;
 import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.RESPONSE_TYPE;
@@ -52,6 +53,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidcrm.wakensys.sugercrm.data_sync.DatabaseHandler;
+import com.androidcrm.wakensys.sugercrm.data_sync.Login;
+import com.androidcrm.wakensys.sugercrm.data_sync.Module;
+import com.androidcrm.wakensys.sugercrm.data_sync.SessionManagement;
+
 public class LoginController extends ActionBarActivity implements OnClickListener {
 
     private String sessionId = "";
@@ -62,11 +68,17 @@ public class LoginController extends ActionBarActivity implements OnClickListene
     private Toolbar toolbar;
     private ProgressDialog progressDialog;
     private static HttpClient httpClient = new DefaultHttpClient();
+    DatabaseHandler db;
+    SessionManagement session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+
+        session = new SessionManagement(getApplicationContext());
+
+        db = new DatabaseHandler(this);
 
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         userName = (EditText) findViewById(R.id.et_user);
@@ -74,6 +86,13 @@ public class LoginController extends ActionBarActivity implements OnClickListene
         url = (EditText) findViewById(R.id.et_url);
         login = (Button) findViewById(R.id.btn_login);
         txt_logo = (TextView) findViewById(R.id.logo_txt);
+
+        Toast.makeText(getApplicationContext(), "User Login Status: " + session.isLoggedIn(), Toast.LENGTH_LONG).show();
+
+        if(session.isLoggedIn() == true){
+            Intent i = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(i);
+        }
 
         Typeface type = Typeface.createFromAsset(getAssets(), "fonts/roboto_regular.ttf");
         txt_logo.setTypeface(type);
@@ -94,15 +113,17 @@ public class LoginController extends ActionBarActivity implements OnClickListene
                     String username = userName.getText().toString();
                     String password = pass.getText().toString();
 
-                 //   if (TextUtils.isEmpty(restUrl) || TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
 
-                  //      Toast.makeText(this, "Please Enter Login Details !", Toast.LENGTH_LONG).show();
 
-                  //  } else {
+                   if (TextUtils.isEmpty(restUrl) || TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
+
+                        Toast.makeText(this, "Please Enter Login Details !", Toast.LENGTH_LONG).show();
+
+                    } else {
 
                         new AttemptLogin().execute(restUrl, username, password);
 
-                 //   }
+                    }
 
 
                     break;
@@ -171,7 +192,7 @@ public class LoginController extends ActionBarActivity implements OnClickListene
             restUrl = "http://crm2.demoplease.com/service/v4_1/rest.php";
 
 
-            Log.d("restUrl, username, password", restUrl + " " + username + " " + password);
+            Log.d("restUrl", restUrl + " " + username + " " + password);
 
                 credentials.put(USER_NAME, username);
 
@@ -253,22 +274,29 @@ public class LoginController extends ActionBarActivity implements OnClickListene
                 JSONObject responseObj = null;
 
                 try {
-
-
                     responseObj = new JSONObject(response);
-                    sessionId = responseObj.get(ID).toString();
 
+                    sessionId = responseObj.get(ID).toString();
                     Log.d("sessionId", sessionId);
                     Log.d("Login", "ok");
 
-                    Bundle b = new Bundle();
-                    b.putString("sessionId", sessionId);
-                    b.putString("restUrl", restUrl);
+                    JSONObject modulesArray = responseObj.getJSONObject(NAME_VALUE_LIST);
 
-                    Intent i = new Intent(getBaseContext(), MainActivity.class);
-                    i.putExtras(b);
+                    JSONObject _user_id = modulesArray.getJSONObject("user_id");
+                    String user_id = _user_id.getString("value");
+                    JSONObject _user_name = modulesArray.getJSONObject("user_name");
+                    String user_name = _user_name.getString("value");
 
-                    startActivity(i);
+                    db.addLogin(new Login(user_id, user_name));
+
+                    Log.d("TAG",user_id +"       " + user_name );
+                    Log.d("Reading: ", "Reading all login..");
+                    List<Login> login = db.getAllLogin();
+
+                    for(Login lo : login){
+                        String log = "ID : " + lo.get_user_id() + " name : " + lo.get_user_name();
+                        Log.d("Reading" , log);
+                    }
 
                 } catch (JSONException e) {
 
@@ -276,6 +304,17 @@ public class LoginController extends ActionBarActivity implements OnClickListene
                     str_error = e.toString();
 
                 }
+
+                session.createLoginSession(restUrl, username, password, sessionId);
+
+                Bundle b = new Bundle();
+                b.putString("sessionId", sessionId);
+                b.putString("restUrl", restUrl);
+
+                Intent i = new Intent(getBaseContext(), MainActivity.class);
+                i.putExtras(b);
+
+                startActivity(i);
 
             }else
             {

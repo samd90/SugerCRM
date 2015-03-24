@@ -47,14 +47,15 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.androidcrm.wakensys.sugercrm.AdapterClass.DrawerListAdapter;
 import com.androidcrm.wakensys.sugercrm.AdapterClass.MenuListAdapter;
 import com.androidcrm.wakensys.sugercrm.AddNewEntry.AddNewItem_SelectMenu;
-import com.androidcrm.wakensys.sugercrm.data_sync.CrmDatabaseAdapter;
 import com.androidcrm.wakensys.sugercrm.data_sync.DatabaseHandler;
 import com.androidcrm.wakensys.sugercrm.data_sync.Module;
+import com.androidcrm.wakensys.sugercrm.data_sync.SessionManagement;
 import com.androidcrm.wakensys.sugercrm.fragment.Fragment_Calendar;
 import com.androidcrm.wakensys.sugercrm.fragment.Fragment_Entries;
 import com.androidcrm.wakensys.sugercrm.fragment.Fragment_home;
@@ -77,7 +78,6 @@ public class MainActivity extends ActionBarActivity {
     ArrayList<String> moduleName = new ArrayList<String>();
     List<String> cannotViewModules = new ArrayList<String>();
     List<String> moduleKeyList = new ArrayList<String>();
-    CrmDatabaseAdapter databaseAdapter;
     private ProgressDialog dialog;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
@@ -88,19 +88,27 @@ public class MainActivity extends ActionBarActivity {
     private boolean canViewModules = false;
     private String module_name_value;
     private String module_key_value;
+    DatabaseHandler db;
+
+    // Session Manager Class
+    SessionManagement session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        DatabaseHandler db = new DatabaseHandler(this);
+        // Session class instance
+        session = new SessionManagement(getApplicationContext());
+
+        db = new DatabaseHandler(this);
 
         /**
          * CRUD Operations
          * */
         // Inserting Contacts
-        Log.d("Insert: ", "Inserting ..");
+
+      /*  Log.d("Insert: ", "Inserting ..");
         db.addModule(new Module("Ravi", "9100000000",0));
         db.addModule(new Module("Srinivas", "9199999999",1));
         db.addModule(new Module("Tommy", "9522222222",2));
@@ -115,6 +123,7 @@ public class MainActivity extends ActionBarActivity {
             // Writing Contacts to log
             Log.d("Name: ", log);
         }
+       */
         module_name_value = getTitle().toString();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
@@ -122,13 +131,40 @@ public class MainActivity extends ActionBarActivity {
         mDrawerItmes = getResources().getStringArray(R.array.drawer_titles);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         mDrawerList = (ListView) findViewById(android.R.id.list);
-
-        Intent i = getIntent();
-        Bundle b = i.getExtras();
-        sessionId = b.getString("sessionId");
-        restUrl = b.getString("restUrl");
-
+        try {
+            Intent i = getIntent();
+            Bundle b = i.getExtras();
+            sessionId = b.getString("sessionId");
+            restUrl = b.getString("restUrl");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         new LoadingMenuModules().execute(sessionId, restUrl);
+
+        Toast.makeText(getApplicationContext(), "User Login Status: " + session.isLoggedIn(), Toast.LENGTH_LONG).show();
+
+        session.checkUserLogin();
+
+        // get user data from session
+        HashMap<String, String> user = session.getUserData();
+
+        // rest url
+        String rest_url = user.get(SessionManagement.KEY_REST_URL);
+
+        // name
+        String name = user.get(SessionManagement.KEY_NAME);
+
+        // password
+        String password = user.get(SessionManagement.KEY_PASSWORD);
+
+        // session id
+        sessionId = user.get(SessionManagement.KEY_SESSION_ID);
+
+        Log.d(TAG, rest_url + " " + name + "  " + password + " " + sessionId);
+
+        if (!session.isLoggedIn()) {
+            finish();
+        }
 
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
@@ -275,9 +311,9 @@ public class MainActivity extends ActionBarActivity {
             case R.id.action_logout: {
                 //Execute logout class
                 new LogoutUser().execute(sessionId, restUrl);
+                session.logoutUSer();
                 return true;
             }
-
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -459,15 +495,17 @@ public class MainActivity extends ActionBarActivity {
                                     action_export = 1;
                                 }
                             }
+
                         }
-                        // long id = databaseAdapter.InsertAvailableModules(module_key, module_label, favorite_enabled, action_edit, action_delete, action_list, action_view, action_import, action_export);
+                        // Add module details to SQLite
+                        db.addModule(new Module(module_key, module_label, action_view));
                     }
 
 
                     MenuListAdapter menuAdapter = new MenuListAdapter(
                             getApplicationContext(), moduleName, photo);
                     mDrawerList.setAdapter(menuAdapter);
-                    mDrawerList.setAdapter(menuAdapter);
+
                 } catch (JSONException e) {
 
                     e.printStackTrace();
@@ -480,7 +518,18 @@ public class MainActivity extends ActionBarActivity {
 
                 }
             } else {
-            //  Do the SQLite
+                //  Do the SQLite
+                Log.d("Reading: ", "Reading all modules..");
+                List<Module> module = db.getAllModules();
+
+                for (Module mo : module) {
+                    String module_name = mo.get_module_label();
+                    Log.d("Reading", module_name);
+                    moduleName.add(module_name);
+                }
+
+                MenuListAdapter menuAdapter = new MenuListAdapter(
+                        getApplicationContext(), moduleName, photo);
             }
         }
     }
@@ -623,8 +672,6 @@ public class MainActivity extends ActionBarActivity {
 
                 successful = true;
                 err_msg = ioe.toString();
-
-
             }
 
             return successful;

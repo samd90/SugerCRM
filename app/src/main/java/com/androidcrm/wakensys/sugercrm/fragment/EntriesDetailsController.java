@@ -44,7 +44,10 @@ import com.androidcrm.wakensys.sugercrm.AddNewEntry.AddNewTasks;
 import com.androidcrm.wakensys.sugercrm.R;
 
 import com.androidcrm.wakensys.sugercrm.AdapterClass.EntryListAdapter;
-import com.androidcrm.wakensys.sugercrm.data_sync.CrmDatabaseAdapter;
+import com.androidcrm.wakensys.sugercrm.data_sync.Account;
+import com.androidcrm.wakensys.sugercrm.data_sync.AllRecords;
+import com.androidcrm.wakensys.sugercrm.data_sync.DatabaseHandler;
+import com.androidcrm.wakensys.sugercrm.data_sync.Module;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -96,7 +99,8 @@ public class EntriesDetailsController extends Fragment implements
     private String module_label = null;
     private String restUrl = null;
     private JSONObject name_value_list = null;
-    private CrmDatabaseAdapter databaseAdapter;
+
+    DatabaseHandler db;
 
     public static EntriesDetailsController newInstance() {
         return new EntriesDetailsController();
@@ -110,8 +114,8 @@ public class EntriesDetailsController extends Fragment implements
                 false);
 
         try {
+            db = new DatabaseHandler(getActivity());
             //declare all layout Items
-            databaseAdapter = new CrmDatabaseAdapter(getActivity());
             call = (Button) rootView.findViewById(R.id.btn_call);
             text = (Button) rootView.findViewById(R.id.btn_text);
             email = (Button) rootView.findViewById(R.id.btn_email);
@@ -128,7 +132,6 @@ public class EntriesDetailsController extends Fragment implements
             detail_4 = (TextView) rootView.findViewById(R.id.txt_detail_4);
             detail_5 = (TextView) rootView.findViewById(R.id.txt_detail_5);
             acc_info_list = (ListView) rootView.findViewById(R.id.lv_info_acc);
-            databaseAdapter = new CrmDatabaseAdapter(getActivity());
             //Add list item in to Relationship listView
             listItem = new String[]{"Calls", "Meetings", "Tasks",
                     "Contacts", "Opportunities", "Leads",
@@ -246,7 +249,7 @@ public class EntriesDetailsController extends Fragment implements
         private String module_label = null;
         private String response = null;
         private HttpResponse res = null;
-        private String id, name, assigned_user_name, created_by_name, date_entered, date_modified, deleted, annual_revenue, phone_fax, billing_address_street,
+        private String user_id,id, name, assigned_user_name, created_by_name, date_entered, date_modified, deleted, annual_revenue, phone_fax, billing_address_street,
                 billing_address_street_2, billing_address_street_3, billing_address_street_4, billing_address_city, billing_address_state, billing_address_postalcode,
                 billing_address_country, phone_office, website, employees, ticker_symbol, shipping_address_street, shipping_address_street_2, shipping_address_street_3,
                 shipping_address_street_4, shipping_address_city, shipping_address_state, shipping_address_postalcode, shipping_address_country, parent_name,
@@ -352,7 +355,7 @@ public class EntriesDetailsController extends Fragment implements
 
                                     JSONObject object = jArray.getJSONObject(i);
 
-                                    id = object.getString("id");
+                                    user_id = object.getString("id");
 
                                     name_value_list = object.getJSONObject("name_value_list");
 
@@ -368,7 +371,7 @@ public class EntriesDetailsController extends Fragment implements
                                     JSONObject date_modified_ = name_value_list.getJSONObject("date_modified");
                                     date_modified = date_modified_.getString("value");
 
-                                    JSONObject deleted_ = name_value_list.getJSONObject("created_by_name");
+                                    JSONObject deleted_ = name_value_list.getJSONObject("deleted");
                                     deleted = deleted_.getString("value");
 
                                     JSONObject annual_revenue_ = name_value_list.getJSONObject("annual_revenue");
@@ -450,9 +453,15 @@ public class EntriesDetailsController extends Fragment implements
                                             .getJSONObject("industry");
                                     industry = industry_.getString("value");
 
-                                    long get_id = databaseAdapter.InsertAccountTable(id, name, email1, parent_name, phone_office, phone_fax, website, employees,
-                                            ticker_symbol, annual_revenue, billing_address_street, billing_address_street_2, billing_address_street_3, billing_address_street_4, billing_address_city,
-                                            billing_address_state, billing_address_postalcode, billing_address_country, shipping_address_street, shipping_address_street_2, shipping_address_street_3, shipping_address_street_4, shipping_address_city, shipping_address_state, shipping_address_postalcode, shipping_address_country, assigned_user_name, created_by_name, date_entered, date_modified, deleted);
+                                    // store account details on SQLite
+                                    db.addAccount(new Account(user_id,name, assigned_user_name, created_by_name, date_entered, date_modified, deleted, annual_revenue, phone_fax, billing_address_street,
+                                            billing_address_street_2, billing_address_street_3, billing_address_street_4, billing_address_city, billing_address_state, billing_address_postalcode,
+                                            billing_address_country, phone_office, website, employees, ticker_symbol, shipping_address_street, shipping_address_street_2, shipping_address_street_3,
+                                            shipping_address_street_4, shipping_address_city, shipping_address_state, shipping_address_postalcode, shipping_address_country, parent_name,industry ));
+
+
+
+
                                     //Set TextView to values
                                     detail_1.setText(name);
                                     detail_2.setText(website);
@@ -460,8 +469,20 @@ public class EntriesDetailsController extends Fragment implements
                                     detail_4.setText(phone_office);
                                     detail_5.setText(billing_address_street + ", " + billing_address_street_2 + ", " + billing_address_street_3 + ", " + billing_address_street_4 + ", " + billing_address_city + ", " + billing_address_state + ", " + billing_address_postalcode + ", " + billing_address_country);
                                 }
+
+
                             } catch (Exception e) {
                                 e.printStackTrace();
+                            }
+
+                            List<Account> accountList = db.getAllAccount();
+                            int record;
+                            String record1 = null;
+                            for(Account ac : accountList){
+                                record = ac.get_id();
+                                record1 = ac.get_user_id();
+
+                                Log.d(TAG, record+ " "+ record1);
                             }
                             break;
                         case "Contacts":
@@ -947,6 +968,7 @@ public class EntriesDetailsController extends Fragment implements
                                     detail_1.setText(name);
                                     detail_2.setText(description);
 
+
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -980,26 +1002,6 @@ public class EntriesDetailsController extends Fragment implements
                                 billing_address_country = cursor.getString(12);
 
                             }*/
-                            Cursor csr = databaseAdapter.getAccount(entry_id);
-                            int i = 0;
-                            String[] moduleId = new String[(csr.getCount() - 1)];
-                            String[] names = new String[(csr.getCount() - 1)];
-                            csr.moveToFirst();
-
-                            while (csr.moveToNext()) {
-                                moduleId[i] = csr.getString(0);
-                                //  moduleLabel[i] = csr.getString(1);
-                                //   entry_ids.add(moduleId[i]);
-                                //   entry_names.add( moduleLabel[i]);
-                                i++;
-                            }
-                            //Set TextView to values
-                            detail_1.setText(name);
-                            detail_2.setText(website);
-                            detail_3.setText(email1);
-                            detail_4.setText(phone_office);
-                            detail_5.setText(billing_address_street + ", " + billing_address_street_2 + ", " + billing_address_street_3 + ", " + billing_address_street_4 + ", " + billing_address_city + ", " + billing_address_state + ", " + billing_address_postalcode + ", " + billing_address_country);
-
 
                         } catch (Exception e) {
                             e.printStackTrace();
