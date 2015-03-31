@@ -1,5 +1,11 @@
 package com.androidcrm.wakensys.sugercrm.AdapterClass;
 
+/**
+ * Created by Wakensys on 3/25/2015.
+ */
+import java.util.HashMap;
+import java.util.List;
+
 import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
@@ -10,13 +16,8 @@ import android.widget.TextView;
 
 import com.androidcrm.wakensys.sugercrm.R;
 
-import java.util.HashMap;
-import java.util.List;
-
-/**
- * Created by Wakensys on 3/24/2015.
- */
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
+
     private Context _context;
     private List<String> _listDataHeader; // header titles
     // child data in format of header title, child title
@@ -87,11 +88,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.expandable_listview_header, null);
+            convertView = infalInflater.inflate(R.layout.list_group, null);
         }
 
         TextView lblListHeader = (TextView) convertView
-                .findViewById(R.id.list_header);
+                .findViewById(R.id.lblListHeader);
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
 

@@ -11,13 +11,11 @@ import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.RE
 import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.REST_DATA;
 import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.GET_AVAILABLE_MODULES;
 
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -50,11 +48,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.androidcrm.wakensys.sugercrm.AdapterClass.DrawerListAdapter;
 import com.androidcrm.wakensys.sugercrm.AdapterClass.MenuListAdapter;
 import com.androidcrm.wakensys.sugercrm.AddNewEntry.AddNewItem_SelectMenu;
+import com.androidcrm.wakensys.sugercrm.Setting.Setting_homeScreen;
 import com.androidcrm.wakensys.sugercrm.data_sync.DatabaseHandler;
-import com.androidcrm.wakensys.sugercrm.data_sync.Module;
 import com.androidcrm.wakensys.sugercrm.data_sync.SessionManagement;
 import com.androidcrm.wakensys.sugercrm.fragment.Fragment_Calendar;
 import com.androidcrm.wakensys.sugercrm.fragment.Fragment_Entries;
@@ -71,19 +68,18 @@ public class MainActivity extends ActionBarActivity {
     ListView mDrawerList;
     ActionBarDrawerToggle mDrawerToggle;
     String[] mDrawerListItems;
-    String sessionId = null;
-    String restUrl = null;
-    String response = null;
-    String moduleLabel = null;
+    String sessionId = "";
+    String restUrl = "";
+    String response = "";
+    String moduleLabel = "";
     ArrayList<String> moduleName = new ArrayList<String>();
-    List<String> cannotViewModules = new ArrayList<String>();
     List<String> moduleKeyList = new ArrayList<String>();
     private ProgressDialog dialog;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     private String[] mDrawerItmes;
     private List<String> module_labels = new ArrayList<String>();
-    private int[] photo = null;
+    private int[] photo;
     private String menuItem;
     private boolean canViewModules = false;
     private String module_name_value;
@@ -103,27 +99,32 @@ public class MainActivity extends ActionBarActivity {
 
         db = new DatabaseHandler(this);
 
-        /**
-         * CRUD Operations
-         * */
-        // Inserting Contacts
+        if (!session.isLoggedIn()) {
+            try {
+                Intent i = getIntent();
+                Bundle b = i.getExtras();
+                sessionId = b.getString("sessionId");
+                restUrl = b.getString("restUrl");
 
-      /*  Log.d("Insert: ", "Inserting ..");
-        db.addModule(new Module("Ravi", "9100000000",0));
-        db.addModule(new Module("Srinivas", "9199999999",1));
-        db.addModule(new Module("Tommy", "9522222222",2));
-        db.addModule(new Module("Karthik", "9533333333",4));
+                Log.d("Session Id", sessionId);
+                Log.d("rest url", restUrl);
 
-        // Reading all contacts
-        Log.d("Reading: ", "Reading all contacts..");
-        List<Module> contacts = db.getAllModules();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else {
+            // get user data from session
+            HashMap<String, String> user = session.getUserData();
 
-        for (Module cn : contacts) {
-            String log = "Id: " + cn.getID() + " ,KEY: " + cn.getModuleKey() + " ,NAME: " + cn.get_module_label() + " ,ACCESS: " + cn.getViewAccess();
-            // Writing Contacts to log
-            Log.d("Name: ", log);
+            // name
+            restUrl = user.get(SessionManagement.KEY_REST_URL);
+            String name = user.get(SessionManagement.KEY_NAME);
+            // email
+            String email = user.get(SessionManagement.KEY_PASSWORD);
+            // email
+            sessionId = user.get(SessionManagement.KEY_SESSION_ID);
+
         }
-       */
         module_name_value = getTitle().toString();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
@@ -131,40 +132,10 @@ public class MainActivity extends ActionBarActivity {
         mDrawerItmes = getResources().getStringArray(R.array.drawer_titles);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         mDrawerList = (ListView) findViewById(android.R.id.list);
-        try {
-            Intent i = getIntent();
-            Bundle b = i.getExtras();
-            sessionId = b.getString("sessionId");
-            restUrl = b.getString("restUrl");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
         new LoadingMenuModules().execute(sessionId, restUrl);
 
         Toast.makeText(getApplicationContext(), "User Login Status: " + session.isLoggedIn(), Toast.LENGTH_LONG).show();
-
-        session.checkUserLogin();
-
-        // get user data from session
-        HashMap<String, String> user = session.getUserData();
-
-        // rest url
-        String rest_url = user.get(SessionManagement.KEY_REST_URL);
-
-        // name
-        String name = user.get(SessionManagement.KEY_NAME);
-
-        // password
-        String password = user.get(SessionManagement.KEY_PASSWORD);
-
-        // session id
-        sessionId = user.get(SessionManagement.KEY_SESSION_ID);
-
-        Log.d(TAG, rest_url + " " + name + "  " + password + " " + sessionId);
-
-        if (!session.isLoggedIn()) {
-            finish();
-        }
 
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
@@ -200,6 +171,9 @@ public class MainActivity extends ActionBarActivity {
             Fragment_home fragment_home = new Fragment_home();
             Bundle fb = new Bundle();
             fb.putString("sessionId", sessionId);
+            fb.putString("restUrl", restUrl);
+            Log.d(TAG, "sessionId" + sessionId + " restUrl " + restUrl);
+
             fragment_home.setArguments(fb);
             getSupportFragmentManager()
                     .beginTransaction()
@@ -211,10 +185,37 @@ public class MainActivity extends ActionBarActivity {
 
 
         // Array for Drawer Listview photos
-        photo = new int[]{R.drawable.btn_home, R.drawable.ic_launcher,
-                R.drawable.btn_ac, R.drawable.btn_co, R.drawable.btn_op,
-                R.drawable.btn_le, R.drawable.btn_cl, R.drawable.btn_me,
-                R.drawable.btn_ts, R.drawable.btn_ca, R.drawable.ic_launcher,
+        photo = new int[]{R.drawable.btn_0011_home,R.drawable.btn_0010_accounts, R.drawable.btn_0009_contacts, R.drawable.btn_0008_opportunities,
+                R.drawable.btn_0007_leads,R.drawable.btn_0006_calendar,R.drawable.btn_0005_documents,R.drawable.btn_0004_emails,R.drawable.btn_0003_campaigns, R.drawable.btn_0002_calls, R.drawable.btn_0001_meeting,
+                R.drawable.btn_0000_tasks,  R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
+                R.drawable.ic_launcher, R.drawable.ic_launcher,
                 R.drawable.ic_launcher, R.drawable.ic_launcher,
                 R.drawable.ic_launcher, R.drawable.ic_launcher,
                 R.drawable.ic_launcher, R.drawable.ic_launcher,
@@ -292,7 +293,10 @@ public class MainActivity extends ActionBarActivity {
             }
 
             case R.id.action_settings: {
-                Toast.makeText(getApplicationContext(), "Option Item clicked", Toast.LENGTH_LONG).show();
+                Intent i = new Intent(getBaseContext(), Setting_homeScreen.class);
+
+                startActivity(i);
+
                 return true;
             }
 
@@ -305,6 +309,8 @@ public class MainActivity extends ActionBarActivity {
                 AddNewItem_SelectMenu fragment = new AddNewItem_SelectMenu();
                 fragment.setArguments(b);
                 getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, TAG).commit();
+                mDrawerLayout.closeDrawers();
+
                 return true;
             }
 
@@ -322,10 +328,10 @@ public class MainActivity extends ActionBarActivity {
 
     class LoadingMenuModules extends AsyncTask<String, Void, Boolean> {
 
-        private String sessionId = null;
-        private String restUrl = null;
+        private String sessionId = "";
+        private String restUrl = "";
         private boolean access = false;
-        private String errorMessage = null;
+        private String errorMessage = "";
         private int action_edit = 0;
         private int action_delete = 0;
         private int action_list = 0;
@@ -378,16 +384,13 @@ public class MainActivity extends ActionBarActivity {
                         .toString()));
 
                 req.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-                Log.e(TAG + " nameValuePairs", nameValuePairs.toString());
-
+Log.d(TAG, "nameValuePairs" + nameValuePairs);
                 // Send POST request
                 httpClient.getParams().setBooleanParameter(
                         CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
                 HttpResponse res = httpClient.execute(req);
 
                 response = EntityUtils.toString(res.getEntity());
-                Log.e(TAG + " response ", response.toString());
 
             } catch (JSONException jo) {
 
@@ -498,9 +501,7 @@ public class MainActivity extends ActionBarActivity {
 
                         }
                         // Add module details to SQLite
-                        db.addModule(new Module(module_key, module_label, action_view));
                     }
-
 
                     MenuListAdapter menuAdapter = new MenuListAdapter(
                             getApplicationContext(), moduleName, photo);
@@ -518,18 +519,7 @@ public class MainActivity extends ActionBarActivity {
 
                 }
             } else {
-                //  Do the SQLite
-                Log.d("Reading: ", "Reading all modules..");
-                List<Module> module = db.getAllModules();
-
-                for (Module mo : module) {
-                    String module_name = mo.get_module_label();
-                    Log.d("Reading", module_name);
-                    moduleName.add(module_name);
-                }
-
-                MenuListAdapter menuAdapter = new MenuListAdapter(
-                        getApplicationContext(), moduleName, photo);
+               // Do SQLite
             }
         }
     }
@@ -548,10 +538,6 @@ public class MainActivity extends ActionBarActivity {
             b.putString("sessionId", sessionId);
             b.putString("module_name", module_key_value);
 
-            Log.d(TAG + " restUrl", restUrl);
-            Log.d(TAG + " sessionId", sessionId);
-            Log.d(TAG + " module_name", module_key_value);
-
             switch (module_key_value) {
                 case "Home":
                     Fragment_home fragment1 = new Fragment_home();
@@ -567,7 +553,16 @@ public class MainActivity extends ActionBarActivity {
                     mDrawerLayout.closeDrawers();
 
                     break;
+                case "Setting":
+                    Intent i = new Intent(getBaseContext(), Setting_homeScreen.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+                    finish();
+                    mDrawerLayout.closeDrawers();
+
+                    break;
                 default:
+
                     Fragment_Entries fragment = new Fragment_Entries();
                     fragment.setArguments(b);
                     getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, TAG).commit();
@@ -581,8 +576,6 @@ public class MainActivity extends ActionBarActivity {
         }
 
         private void logout() {
-
-            Log.d("click", "logout");
 
             AlertDialog.Builder builder = new AlertDialog.Builder(
                     MainActivity.this);

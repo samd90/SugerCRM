@@ -45,12 +45,10 @@ import org.json.JSONObject;
 import com.androidcrm.wakensys.sugercrm.R;
 
 import com.androidcrm.wakensys.sugercrm.AdapterClass.EntriesListAdapter;
-import com.androidcrm.wakensys.sugercrm.data_sync.AllRecords;
 import com.androidcrm.wakensys.sugercrm.data_sync.DatabaseHandler;
 
 
 import android.app.ProgressDialog;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -59,7 +57,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -192,7 +189,6 @@ public class Fragment_Entries extends Fragment implements
         try {
             Log.v("TAG", "Drawer Item clicked");
             account_name = entry_names.get(position);
-            module_name = module_names.get(position);
             entry_id = entry_ids.get(position);
             EntriesDetailsController fragment = new EntriesDetailsController();
             //Put EntryId, module label into bundle
@@ -202,12 +198,6 @@ public class Fragment_Entries extends Fragment implements
             b.putString("entry_id", entry_id);
             b.putString("restUrl", restUrl);
 
-          /*
-            Log.d(TAG + " sessionId", sessionId);
-            Log.d(TAG + " module name" , module_name);
-            Log.d(TAG + " entry_id", entry_id);
-            Log.d(TAG + " restUrl" , restUrl);
-            */
             //Set bundle into fragment
             fragment.setArguments(b);
             getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, TAG).addToBackStack(TAG).commit();
@@ -340,7 +330,6 @@ public class Fragment_Entries extends Fragment implements
                         String nameValue = name_value.getString("value");
 
                         entry_names.add(nameValue);
-                        db.addAllRecord(new AllRecords(nameValue, other_module_name));
                     }
                     //Add entry_names Array to array adapter
                     EntriesListAdapter draweradapter = new EntriesListAdapter(getActivity().getApplicationContext(), entry_names);
@@ -355,17 +344,7 @@ public class Fragment_Entries extends Fragment implements
 
                     //  Do the SQLite
 
-                Log.d("Reading: ", "Reading all records..");
-                List<AllRecords> allRecords = db.getAllRecords();
-                String record = null;
-                for (AllRecords ar : allRecords) {
-                    record = ar.get_name();
-                    String mo_n = ar.get_module_name();
 
-                    entry_names.add(record);
-
-                    Log.d("Reading", record + " " + mo_n);
-                }
 
                     Toast.makeText(getActivity(), "Error ! " + errorMessage, Toast.LENGTH_LONG).show();
                     EntriesListAdapter drawerAdapter = new EntriesListAdapter(getActivity().getApplicationContext(), entry_names);

@@ -59,7 +59,7 @@ public class ListAdapter extends BaseAdapter {
 
 		title = (TextView) itemView.findViewById(R.id.title);
         title_1 = (TextView) itemView.findViewById(R.id.title1);
-        Typeface type = Typeface.createFromAsset(context.getAssets(),"fonts/roboto_regular.ttf");
+        Typeface type = Typeface.createFromAsset(context.getAssets(),"fonts/font.ttf");
 		// icon = (ImageView) itemView.findViewById(R.id.icon);
 
 		title.setText(mtitle.get(position));

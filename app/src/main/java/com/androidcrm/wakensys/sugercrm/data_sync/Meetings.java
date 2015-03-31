@@ -3,7 +3,7 @@ package com.androidcrm.wakensys.sugercrm.data_sync;
 /**
  * Created by Wakensys on 3/24/2015.
  */
-public class Account {
+public class Meetings {
 
     int _id;
     String _user_id, _name, _assigned_user_name, _created_by_name, _date_entered, _date_modified, _deleted, _annual_revenue, _phone_fax, _billing_address_street,
@@ -11,14 +11,14 @@ public class Account {
             _billing_address_country, _phone_office, _website, _employees, _ticker_symbol, _shipping_address_street, _shipping_address_street_2, _shipping_address_street_3,
             _shipping_address_street_4, _shipping_address_city, _shipping_address_state, _shipping_address_postalcode, _shipping_address_country, _parent_name,
             _date_start, _industry;
-    public Account(){
+    public Meetings(){
 
     }
-    public Account(int id, String user_id, String assigned_user_name, String created_by_name, String date_entered, String date_modified, String deleted, String annual_revenue, String phone_fax, String billing_address_street,
-                   String billing_address_street_2, String billing_address_street_3, String billing_address_street_4, String billing_address_city, String billing_address_state, String billing_address_postalcode,
-                   String billing_address_country, String phone_office, String website, String employees, String ticker_symbol, String shipping_address_street, String shipping_address_street_2, String shipping_address_street_3,
-                   String shipping_address_street_4, String shipping_address_city, String shipping_address_state, String shipping_address_postalcode, String shipping_address_country, String parent_name,
-                   String name, String industry){
+    public Meetings(int id, String user_id, String assigned_user_name, String created_by_name, String date_entered, String date_modified, String deleted, String annual_revenue, String phone_fax, String billing_address_street,
+                    String billing_address_street_2, String billing_address_street_3, String billing_address_street_4, String billing_address_city, String billing_address_state, String billing_address_postalcode,
+                    String billing_address_country, String phone_office, String website, String employees, String ticker_symbol, String shipping_address_street, String shipping_address_street_2, String shipping_address_street_3,
+                    String shipping_address_street_4, String shipping_address_city, String shipping_address_state, String shipping_address_postalcode, String shipping_address_country, String parent_name,
+                    String name, String industry){
         this._id = id;
         this._user_id = user_id;
         this._name = name;
@@ -54,11 +54,11 @@ public class Account {
 
     }
 
-    public Account(String user_id,String name ,String assigned_user_name, String created_by_name, String date_entered, String date_modified, String deleted, String annual_revenue, String phone_fax, String billing_address_street,
-                   String billing_address_street_2, String billing_address_street_3, String billing_address_street_4, String billing_address_city, String billing_address_state, String billing_address_postalcode,
-                   String billing_address_country, String phone_office, String website, String employees, String ticker_symbol, String shipping_address_street, String shipping_address_street_2, String shipping_address_street_3,
-                   String shipping_address_street_4, String shipping_address_city, String shipping_address_state, String shipping_address_postalcode, String shipping_address_country, String parent_name,
-                  String industry){
+    public Meetings(String user_id, String name, String assigned_user_name, String created_by_name, String date_entered, String date_modified, String deleted, String annual_revenue, String phone_fax, String billing_address_street,
+                    String billing_address_street_2, String billing_address_street_3, String billing_address_street_4, String billing_address_city, String billing_address_state, String billing_address_postalcode,
+                    String billing_address_country, String phone_office, String website, String employees, String ticker_symbol, String shipping_address_street, String shipping_address_street_2, String shipping_address_street_3,
+                    String shipping_address_street_4, String shipping_address_city, String shipping_address_state, String shipping_address_postalcode, String shipping_address_country, String parent_name,
+                    String industry){
 
         this._user_id = user_id;
         this._name = name;

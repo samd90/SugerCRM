@@ -56,7 +56,7 @@ public class EntryListAdapter extends BaseAdapter {
 		icon = (ImageView) itemView.findViewById(R.id.icon);
 
 
-        Typeface type = Typeface.createFromAsset(context.getAssets(),"fonts/roboto_regular.ttf");
+        Typeface type = Typeface.createFromAsset(context.getAssets(),"fonts/font.ttf");
         title.setTypeface(type);
 		title.setText(mtitle[position]);
 

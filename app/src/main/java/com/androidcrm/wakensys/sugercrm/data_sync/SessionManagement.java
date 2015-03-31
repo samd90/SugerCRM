@@ -75,7 +75,7 @@ public class SessionManagement {
         editor.clear();
         editor.commit();                // commit the changes
 
-        Intent i = new Intent(_context, Login.class);
+        Intent i = new Intent(_context, LoginController.class);
         // closing all the Activities
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);          // add flag to new task

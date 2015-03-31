@@ -44,14 +44,10 @@ import com.androidcrm.wakensys.sugercrm.AddNewEntry.AddNewTasks;
 import com.androidcrm.wakensys.sugercrm.R;
 
 import com.androidcrm.wakensys.sugercrm.AdapterClass.EntryListAdapter;
-import com.androidcrm.wakensys.sugercrm.data_sync.Account;
-import com.androidcrm.wakensys.sugercrm.data_sync.AllRecords;
 import com.androidcrm.wakensys.sugercrm.data_sync.DatabaseHandler;
-import com.androidcrm.wakensys.sugercrm.data_sync.Module;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -453,14 +449,6 @@ public class EntriesDetailsController extends Fragment implements
                                             .getJSONObject("industry");
                                     industry = industry_.getString("value");
 
-                                    // store account details on SQLite
-                                    db.addAccount(new Account(user_id,name, assigned_user_name, created_by_name, date_entered, date_modified, deleted, annual_revenue, phone_fax, billing_address_street,
-                                            billing_address_street_2, billing_address_street_3, billing_address_street_4, billing_address_city, billing_address_state, billing_address_postalcode,
-                                            billing_address_country, phone_office, website, employees, ticker_symbol, shipping_address_street, shipping_address_street_2, shipping_address_street_3,
-                                            shipping_address_street_4, shipping_address_city, shipping_address_state, shipping_address_postalcode, shipping_address_country, parent_name,industry ));
-
-
-
 
                                     //Set TextView to values
                                     detail_1.setText(name);
@@ -475,15 +463,6 @@ public class EntriesDetailsController extends Fragment implements
                                 e.printStackTrace();
                             }
 
-                            List<Account> accountList = db.getAllAccount();
-                            int record;
-                            String record1 = null;
-                            for(Account ac : accountList){
-                                record = ac.get_id();
-                                record1 = ac.get_user_id();
-
-                                Log.d(TAG, record+ " "+ record1);
-                            }
                             break;
                         case "Contacts":
                             try {

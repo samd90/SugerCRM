@@ -6,7 +6,6 @@ import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.IN
 import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.JSON;
 import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.LOGIN;
 import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.METHOD;
-import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.MODULES;
 import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.NAME_VALUE_LIST;
 import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.PASSWORD;
 import static com.androidcrm.wakensys.sugercrm.AdapterClass.RestUtilConstants.RESPONSE_TYPE;
@@ -18,6 +17,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -35,41 +35,37 @@ import org.json.JSONObject;
 
 import org.apache.http.client.HttpClient;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidcrm.wakensys.sugercrm.data_sync.DatabaseHandler;
 import com.androidcrm.wakensys.sugercrm.data_sync.Login;
-import com.androidcrm.wakensys.sugercrm.data_sync.Module;
 import com.androidcrm.wakensys.sugercrm.data_sync.SessionManagement;
 
 public class LoginController extends ActionBarActivity implements OnClickListener {
 
     private String sessionId = "";
-    public static final String MODULES = "modules";
     private EditText userName, pass, url;
-    private TextView txt_logo;
     private Button login;
-    private Toolbar toolbar;
     private ProgressDialog progressDialog;
     private static HttpClient httpClient = new DefaultHttpClient();
     DatabaseHandler db;
     SessionManagement session;
+    private CheckBox testAccount;
+    private boolean check_user_login_from_test = false;
+    private static final String TAG = LoginController.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,26 +76,46 @@ public class LoginController extends ActionBarActivity implements OnClickListene
 
         db = new DatabaseHandler(this);
 
-        toolbar = (Toolbar) findViewById(R.id.app_bar);
+        // Check box for Test Account login
+        testAccount = (CheckBox) findViewById(R.id.check_test);
+        testAccount.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (testAccount.isChecked() == true) {
+                    check_user_login_from_test = true;
+                } else {
+                    check_user_login_from_test = false;
+                }
+            }
+        });
+
         userName = (EditText) findViewById(R.id.et_user);
         pass = (EditText) findViewById(R.id.et_pass);
         url = (EditText) findViewById(R.id.et_url);
         login = (Button) findViewById(R.id.btn_login);
-        txt_logo = (TextView) findViewById(R.id.logo_txt);
 
-        Toast.makeText(getApplicationContext(), "User Login Status: " + session.isLoggedIn(), Toast.LENGTH_LONG).show();
-
-        if(session.isLoggedIn() == true){
+        if (session.isLoggedIn() == true) {
             Intent i = new Intent(getApplicationContext(), MainActivity.class);
+            // get user data from session
+            HashMap<String, String> user = session.getUserData();
+
+            // name
+            String restUrl = user.get(SessionManagement.KEY_REST_URL);
+
+            // email
+            String session_id = user.get(SessionManagement.KEY_SESSION_ID);
+            i.putExtra("restUrl", restUrl);
+            i.putExtra("sessionId", session_id);
             startActivity(i);
         }
 
-        Typeface type = Typeface.createFromAsset(getAssets(), "fonts/roboto_regular.ttf");
-        txt_logo.setTypeface(type);
-
+        Typeface type = Typeface.createFromAsset(getAssets(), "fonts/font.ttf");
+        login.setTypeface(type);
+        testAccount.setTypeface(type);
         login.setOnClickListener(this);
-
-        setSupportActionBar(toolbar);
+        userName.setTypeface(type);
+        pass.setTypeface(type);
+        url.setTypeface(type);
     }
 
     @Override
@@ -107,25 +123,31 @@ public class LoginController extends ActionBarActivity implements OnClickListene
         try {
             switch (v.getId()) {
                 case R.id.btn_login:
-                    Log.d("click", "login button clicked");
+                    if (check_user_login_from_test == true) {
 
-                    String restUrl = url.getText().toString();
-                    String username = userName.getText().toString();
-                    String password = pass.getText().toString();
+                        String user_name = "sameera";
+                        String pass = "wakensys123";
+                        String rest_url = "http://crm2.demoplease.com/service/v4_1/rest.php";
 
-
-
-                   if (TextUtils.isEmpty(restUrl) || TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
-
-                        Toast.makeText(this, "Please Enter Login Details !", Toast.LENGTH_LONG).show();
+                        new AttemptLogin().execute(rest_url, user_name, pass);
 
                     } else {
 
-                        new AttemptLogin().execute(restUrl, username, password);
+                        String Url = url.getText().toString();
+                        String restUrl = "http://"+ Url + "/service/v4_1/rest.php";
+                        String username = userName.getText().toString();
+                        String password = pass.getText().toString();
 
+                        if (TextUtils.isEmpty(restUrl) || TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
+
+                            Toast.makeText(this, "Please Enter Login Details !", Toast.LENGTH_LONG).show();
+
+                        } else {
+
+                            new AttemptLogin().execute(restUrl, username, password);
+
+                        }
                     }
-
-
                     break;
                 default:
                     break;
@@ -133,9 +155,7 @@ public class LoginController extends ActionBarActivity implements OnClickListene
         } catch (Exception e) {
 
             e.printStackTrace();
-
         }
-
     }
 
     // Create md5 password
@@ -158,11 +178,11 @@ public class LoginController extends ActionBarActivity implements OnClickListene
     class AttemptLogin extends AsyncTask<String, Void, Boolean> {
 
         JSONObject credentials = new JSONObject();
-        String response;
-        String restUrl = null;
-        String username = null;
-        String password = null;
-        String str_error = null;
+        String response= "";
+        String restUrl = "";
+        String username = "";
+        String password = "";
+        String str_error = "";
 
         @Override
         protected void onPreExecute() {
@@ -177,22 +197,13 @@ public class LoginController extends ActionBarActivity implements OnClickListene
         @Override
         protected Boolean doInBackground(String... params) {
 
-            boolean successful = false;
+            boolean unsuccessful = false;
 
             try {
 
-/*
-            restUrl = params[0];
-            username = params[1];
-            password = params[2];
-*/
-
-            username = "sameera";
-            password = "wakensys123";
-            restUrl = "http://crm2.demoplease.com/service/v4_1/rest.php";
-
-
-            Log.d("restUrl", restUrl + " " + username + " " + password);
+                restUrl = params[0];
+                username = params[1];
+                password = params[2];
 
                 credentials.put(USER_NAME, username);
 
@@ -220,8 +231,6 @@ public class LoginController extends ActionBarActivity implements OnClickListene
                 nameValuePairs.add(new BasicNameValuePair(APPLICATION, ""));
                 nameValuePairs.add(new BasicNameValuePair(NAME_VALUE_LIST, ""));
 
-                Log.d("nameValuePairs", nameValuePairs.toString());
-
                 reqLogin.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                 // Log.i(LOG_TAG, EntityUtils.toString(reqLogin.getEntity()));
                 httpClient.getParams().setBooleanParameter(
@@ -233,34 +242,34 @@ public class LoginController extends ActionBarActivity implements OnClickListene
 
             } catch (JSONException e) {
 
-                successful = true;
+                unsuccessful = true;
                 str_error = e.toString();
 
             } catch (ClientProtocolException e) {
 
                 e.printStackTrace();
-                successful = true;
+                unsuccessful = true;
                 str_error = e.toString();
 
             } catch (UnsupportedEncodingException e) {
 
                 e.printStackTrace();
-                successful = true;
+                unsuccessful = true;
                 str_error = e.toString();
 
             } catch (IOException e) {
 
                 e.printStackTrace();
                 str_error = e.toString();
-                successful = true;
-            }catch (Exception e) {
+                unsuccessful = true;
+            } catch (Exception e) {
 
                 e.printStackTrace();
                 str_error = e.toString();
-                successful = true;
+                unsuccessful = true;
             }
 
-            return successful;
+            return unsuccessful;
 
         }
 
@@ -270,15 +279,12 @@ public class LoginController extends ActionBarActivity implements OnClickListene
 
             if (result != true) {
 
-                Log.d("Login - response", response);
                 JSONObject responseObj = null;
 
                 try {
                     responseObj = new JSONObject(response);
 
                     sessionId = responseObj.get(ID).toString();
-                    Log.d("sessionId", sessionId);
-                    Log.d("Login", "ok");
 
                     JSONObject modulesArray = responseObj.getJSONObject(NAME_VALUE_LIST);
 
@@ -289,13 +295,11 @@ public class LoginController extends ActionBarActivity implements OnClickListene
 
                     db.addLogin(new Login(user_id, user_name));
 
-                    Log.d("TAG",user_id +"       " + user_name );
-                    Log.d("Reading: ", "Reading all login..");
                     List<Login> login = db.getAllLogin();
 
-                    for(Login lo : login){
+                    for (Login lo : login) {
                         String log = "ID : " + lo.get_user_id() + " name : " + lo.get_user_name();
-                        Log.d("Reading" , log);
+
                     }
 
                 } catch (JSONException e) {
@@ -307,19 +311,16 @@ public class LoginController extends ActionBarActivity implements OnClickListene
 
                 session.createLoginSession(restUrl, username, password, sessionId);
 
-                Bundle b = new Bundle();
-                b.putString("sessionId", sessionId);
-                b.putString("restUrl", restUrl);
 
-                Intent i = new Intent(getBaseContext(), MainActivity.class);
-                i.putExtras(b);
+                Intent i = new Intent(LoginController.this, MainActivity.class);
 
+                i.putExtra("sessionId", sessionId);
+                i.putExtra("restUrl", restUrl);
                 startActivity(i);
 
-            }else
-            {
+            } else {
 
-                Toast.makeText(getBaseContext(),"Error !! " + str_error, Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext(), "Error !! " + str_error, Toast.LENGTH_LONG).show();
 
             }
 

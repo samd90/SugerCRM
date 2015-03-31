@@ -61,11 +61,11 @@ public class MenuListAdapter extends BaseAdapter {
 		title = (TextView) itemView.findViewById(R.id.title);
 		icon = (ImageView) itemView.findViewById(R.id.icon);
 
-         Typeface type = Typeface.createFromAsset(context.getAssets(),"fonts/roboto_regular.ttf");
+         Typeface type = Typeface.createFromAsset(context.getAssets(),"fonts/font.ttf");
 
         title.setText(mtitle.get(position));
          title.setTypeface(type);
-		//icon.setImageResource(micon[position]);
+		icon.setImageResource(micon[position]);
 
 		return itemView;
 

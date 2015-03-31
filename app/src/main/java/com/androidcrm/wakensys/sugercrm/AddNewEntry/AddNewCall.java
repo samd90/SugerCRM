@@ -104,7 +104,7 @@ public class AddNewCall extends Fragment implements View.OnClickListener {
         // Get the reference of buttons
         btn_save = (Button) rootView.findViewById(R.id.btn_save);
         btn_cancel = (Button) rootView.findViewById(R.id.btn_cancel);
-        btn_date = (Button) rootView.findViewById(R.id.date);
+        //btn_date = (Button) rootView.findViewById(R.id.date);
         btn_time = (Button) rootView.findViewById(R.id.time);
         // Get the reference of Spinners
         status_1 = (Spinner) rootView.findViewById(R.id.spinner_in_out);
@@ -119,7 +119,7 @@ public class AddNewCall extends Fragment implements View.OnClickListener {
 
         // Set on ClickListener on buttons
         btn_save.setOnClickListener(this);
-        btn_date.setOnClickListener(this);
+        //btn_date.setOnClickListener(this);
         btn_time.setOnClickListener(this);
         btn_cancel.setOnClickListener(this);
 

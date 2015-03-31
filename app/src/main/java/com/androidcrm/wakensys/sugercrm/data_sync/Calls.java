@@ -3,25 +3,22 @@ package com.androidcrm.wakensys.sugercrm.data_sync;
 /**
  * Created by Wakensys on 3/24/2015.
  */
-public class Contact {
+public class Calls {
 
     int _id;
     String _user_id, _name, _assigned_user_name, _created_by_name, _date_entered, _date_modified, _deleted, _annual_revenue, _phone_fax, _billing_address_street,
             _billing_address_street_2, _billing_address_street_3, _billing_address_street_4, _billing_address_city, _billing_address_state, _billing_address_postalcode,
             _billing_address_country, _phone_office, _website, _employees, _ticker_symbol, _shipping_address_street, _shipping_address_street_2, _shipping_address_street_3,
             _shipping_address_street_4, _shipping_address_city, _shipping_address_state, _shipping_address_postalcode, _shipping_address_country, _parent_name,
-            _date_start, _direction, _status, _duration_hours, _duration_minutes, _call_time, _parent_type, _description, _opportunity_type, _account_name, _amount_usdollar, _amountUSdollar, _sales_stage,
-            _title, _phone_work, _phone_mobile, _duration, _industry, _department, _state, _case_number, _type, _priority, _date_closed, _probability;
-
-    public Contact(){
+            _date_start, _industry;
+    public Calls(){
 
     }
-    public Contact(int id, String user_id, String name, String assigned_user_name, String created_by_name, String date_entered, String date_modified, String deleted, String annual_revenue, String phone_fax, String billing_address_street,
-                   String billing_address_street_2, String billing_address_street_3, String billing_address_street_4, String billing_address_city, String billing_address_state, String billing_address_postalcode,
-                   String billing_address_country, String phone_office, String website, String employees, String ticker_symbol, String shipping_address_street, String shipping_address_street_2, String shipping_address_street_3,
-                   String shipping_address_street_4, String shipping_address_city, String shipping_address_state, String shipping_address_postalcode, String shipping_address_country, String parent_name,
-                   String date_start, String direction, String status, String duration_hours, String duration_minutes, String call_time, String parent_type, String description, String opportunity_type, String account_name, String amount_usdollar, String amountUSdollar, String sales_stage,
-                   String title, String phone_work, String phone_mobile, String duration, String industry, String department, String state, String case_number, String type, String priority, String date_closed, String probability){
+    public Calls(int id, String user_id, String assigned_user_name, String created_by_name, String date_entered, String date_modified, String deleted, String annual_revenue, String phone_fax, String billing_address_street,
+                 String billing_address_street_2, String billing_address_street_3, String billing_address_street_4, String billing_address_city, String billing_address_state, String billing_address_postalcode,
+                 String billing_address_country, String phone_office, String website, String employees, String ticker_symbol, String shipping_address_street, String shipping_address_street_2, String shipping_address_street_3,
+                 String shipping_address_street_4, String shipping_address_city, String shipping_address_state, String shipping_address_postalcode, String shipping_address_country, String parent_name,
+                 String name, String industry){
         this._id = id;
         this._user_id = user_id;
         this._name = name;
@@ -53,39 +50,15 @@ public class Contact {
         this._shipping_address_postalcode = shipping_address_postalcode;
         this._shipping_address_country = shipping_address_country;
         this._parent_name = parent_name;
-        this._date_start = date_start;
-        this._direction = direction;
-        this._status = status;
-        this._duration_hours = duration_hours;
-        this._duration_minutes = duration_minutes;
-        this._call_time = call_time;
-        this._parent_type = parent_type;
-        this._description = description;
-        this._opportunity_type = opportunity_type;
-        this._account_name = account_name;
-        this._amount_usdollar = amount_usdollar;
-        this._amountUSdollar = amountUSdollar;
-        this._sales_stage = sales_stage;
-        this._title = title;
-        this._phone_work = phone_work;
-        this._phone_mobile = phone_mobile;
-        this._duration = duration;
         this._industry = industry;
-        this._department = department;
-        this._state = state;
-        this._case_number = case_number;
-        this._type = type;
-        this._priority = priority;
-        this._date_closed = date_closed;
-        this._probability = probability;
+
     }
 
-    public Contact(String user_id, String name, String assigned_user_name, String created_by_name, String date_entered, String date_modified, String deleted, String annual_revenue, String phone_fax, String billing_address_street,
-                   String billing_address_street_2, String billing_address_street_3, String billing_address_street_4, String billing_address_city, String billing_address_state, String billing_address_postalcode,
-                   String billing_address_country, String phone_office, String website, String employees, String ticker_symbol, String shipping_address_street, String shipping_address_street_2, String shipping_address_street_3,
-                   String shipping_address_street_4, String shipping_address_city, String shipping_address_state, String shipping_address_postalcode, String shipping_address_country, String parent_name,
-                   String date_start, String direction, String status, String duration_hours, String duration_minutes, String call_time, String parent_type, String description, String opportunity_type, String account_name, String amount_usdollar, String amountUSdollar, String sales_stage,
-                   String title, String phone_work, String phone_mobile, String duration, String industry, String department, String state, String case_number, String type, String priority, String date_closed, String probability){
+    public Calls(String user_id, String name, String assigned_user_name, String created_by_name, String date_entered, String date_modified, String deleted, String annual_revenue, String phone_fax, String billing_address_street,
+                 String billing_address_street_2, String billing_address_street_3, String billing_address_street_4, String billing_address_city, String billing_address_state, String billing_address_postalcode,
+                 String billing_address_country, String phone_office, String website, String employees, String ticker_symbol, String shipping_address_street, String shipping_address_street_2, String shipping_address_street_3,
+                 String shipping_address_street_4, String shipping_address_city, String shipping_address_state, String shipping_address_postalcode, String shipping_address_country, String parent_name,
+                 String industry){
 
         this._user_id = user_id;
         this._name = name;
@@ -117,32 +90,11 @@ public class Contact {
         this._shipping_address_postalcode = shipping_address_postalcode;
         this._shipping_address_country = shipping_address_country;
         this._parent_name = parent_name;
-        this._date_start = date_start;
-        this._direction = direction;
-        this._status = status;
-        this._duration_hours = duration_hours;
-        this._duration_minutes = duration_minutes;
-        this._call_time = call_time;
-        this._parent_type = parent_type;
-        this._description = description;
-        this._opportunity_type = opportunity_type;
-        this._account_name = account_name;
-        this._amount_usdollar = amount_usdollar;
-        this._amountUSdollar = amountUSdollar;
-        this._sales_stage = sales_stage;
-        this._title = title;
-        this._phone_work = phone_work;
-        this._phone_mobile = phone_mobile;
-        this._duration = duration;
         this._industry = industry;
-        this._department = department;
-        this._state = state;
-        this._case_number = case_number;
-        this._type = type;
-        this._priority = priority;
-        this._date_closed = date_closed;
-        this._probability = probability;
+
     }
+
+
 
     public int get_id() {
         return _id;
@@ -400,195 +352,11 @@ public class Contact {
         this._date_start = _date_start;
     }
 
-    public String get_direction() {
-        return _direction;
-    }
-
-    public void set_direction(String _direction) {
-        this._direction = _direction;
-    }
-
-    public String get_status() {
-        return _status;
-    }
-
-    public void set_status(String _status) {
-        this._status = _status;
-    }
-
-    public String get_duration_hours() {
-        return _duration_hours;
-    }
-
-    public void set_duration_hours(String _duration_hours) {
-        this._duration_hours = _duration_hours;
-    }
-
-    public String get_duration_minutes() {
-        return _duration_minutes;
-    }
-
-    public void set_duration_minutes(String _duration_minutes) {
-        this._duration_minutes = _duration_minutes;
-    }
-
-    public String get_call_time() {
-        return _call_time;
-    }
-
-    public void set_call_time(String _call_time) {
-        this._call_time = _call_time;
-    }
-
-    public String get_parent_type() {
-        return _parent_type;
-    }
-
-    public void set_parent_type(String _parent_type) {
-        this._parent_type = _parent_type;
-    }
-
-    public String get_description() {
-        return _description;
-    }
-
-    public void set_description(String _description) {
-        this._description = _description;
-    }
-
-    public String get_opportunity_type() {
-        return _opportunity_type;
-    }
-
-    public void set_opportunity_type(String _opportunity_type) {
-        this._opportunity_type = _opportunity_type;
-    }
-
-    public String get_account_name() {
-        return _account_name;
-    }
-
-    public void set_account_name(String _account_name) {
-        this._account_name = _account_name;
-    }
-
-    public String get_amount_usdollar() {
-        return _amount_usdollar;
-    }
-
-    public void set_amount_usdollar(String _amount_usdollar) {
-        this._amount_usdollar = _amount_usdollar;
-    }
-
-    public String get_amountUSdollar() {
-        return _amountUSdollar;
-    }
-
-    public void set_amountUSdollar(String _amountUSdollar) {
-        this._amountUSdollar = _amountUSdollar;
-    }
-
-    public String get_sales_stage() {
-        return _sales_stage;
-    }
-
-    public void set_sales_stage(String _sales_stage) {
-        this._sales_stage = _sales_stage;
-    }
-
-    public String get_title() {
-        return _title;
-    }
-
-    public void set_title(String _title) {
-        this._title = _title;
-    }
-
-    public String get_phone_work() {
-        return _phone_work;
-    }
-
-    public void set_phone_work(String _phone_work) {
-        this._phone_work = _phone_work;
-    }
-
-    public String get_phone_mobile() {
-        return _phone_mobile;
-    }
-
-    public void set_phone_mobile(String _phone_mobile) {
-        this._phone_mobile = _phone_mobile;
-    }
-
-    public String get_duration() {
-        return _duration;
-    }
-
-    public void set_duration(String _duration) {
-        this._duration = _duration;
-    }
-
     public String get_industry() {
         return _industry;
     }
 
     public void set_industry(String _industry) {
         this._industry = _industry;
-    }
-
-    public String get_department() {
-        return _department;
-    }
-
-    public void set_department(String _department) {
-        this._department = _department;
-    }
-
-    public String get_state() {
-        return _state;
-    }
-
-    public void set_state(String _state) {
-        this._state = _state;
-    }
-
-    public String get_case_number() {
-        return _case_number;
-    }
-
-    public void set_case_number(String _case_number) {
-        this._case_number = _case_number;
-    }
-
-    public String get_type() {
-        return _type;
-    }
-
-    public void set_type(String _type) {
-        this._type = _type;
-    }
-
-    public String get_priority() {
-        return _priority;
-    }
-
-    public void set_priority(String _priority) {
-        this._priority = _priority;
-    }
-
-    public String get_date_closed() {
-        return _date_closed;
-    }
-
-    public void set_date_closed(String _date_closed) {
-        this._date_closed = _date_closed;
-    }
-
-    public String get_probability() {
-        return _probability;
-    }
-
-    public void set_probability(String _probability) {
-        this._probability = _probability;
     }
 }
